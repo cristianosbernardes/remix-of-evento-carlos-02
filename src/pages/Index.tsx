@@ -220,7 +220,7 @@ const Index = () => {
               <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4 text-sm text-foreground/60 mb-8">
                 <span className="inline-flex items-center gap-1.5">
                   <Calendar className="w-4 h-4 text-primary" />
-                  10 de Abril de 2026
+                  09 de Abril de 2026
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <MapPin className="w-4 h-4 text-primary" />
