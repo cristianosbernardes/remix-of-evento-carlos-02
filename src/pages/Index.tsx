@@ -330,7 +330,7 @@ const Index = () => {
                       }}
                     >
                       <img
-                        src={carlosSpeaker}
+                        src={carlosHero}
                         alt="Carlos Arantes — Palestrante do Fórum Novo Comércio 2026"
                         className="w-full h-auto object-cover brightness-110"
                       />
