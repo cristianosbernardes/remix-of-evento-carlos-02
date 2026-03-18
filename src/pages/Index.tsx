@@ -284,9 +284,19 @@ const Index = () => {
                       onClick={scrollToForm}
                       className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-bold text-sm uppercase tracking-wider px-10 py-7 group glow-green"
                     >
-                      Quero Participar
+                      Garantir Minha Vaga
                       <ArrowDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform" />
                     </Button>
+                  </motion.div>
+
+                  {/* Trust & Urgency */}
+                  <motion.div variants={fadeUp} className="mt-4 space-y-1.5">
+                    <p className="text-xs text-foreground/40">
+                      Pagamento seguro · Cartão, PIX ou boleto
+                    </p>
+                    <p className="text-xs text-primary font-medium flex items-center gap-1.5">
+                      <span className="text-yellow-500">⚠</span> Últimas vagas · Preço pode aumentar sem aviso
+                    </p>
                   </motion.div>
 
                   {/* Social proof */}
