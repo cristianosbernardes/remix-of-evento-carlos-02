@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import carlosSpeaker from "@/assets/carlos-speaker.webp";
+import carlosHero from "@/assets/carlos-hero.webp";
 
 const GOOGLE_SHEETS_URL = "";
 
