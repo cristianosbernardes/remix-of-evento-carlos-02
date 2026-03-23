@@ -267,12 +267,12 @@ const Index = () => {
 
           {/* ══ NAV — V4 style: logo | urgency | countdown | CTA ══ */}
           <nav className="fixed top-0 left-0 right-0 z-[5000] bg-[rgba(3,12,24,0.92)] backdrop-blur-[12px]">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+            <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-2 sm:gap-4">
               {/* Logo */}
-              <span className="font-display text-sm sm:text-base tracking-tight flex-shrink-0">
+              <span className="font-display text-[11px] sm:text-base tracking-tight flex-shrink-0">
                 <span className="text-white">FÓRUM</span>
                 <span className="text-primary ml-1">NOVO COMÉRCIO</span>
-                <span className="text-white/30 ml-1 text-[10px]">2026</span>
+                <span className="text-white/30 ml-1 text-[10px] hidden sm:inline">2026</span>
               </span>
 
               {/* Urgency text — 2 lines like V4 */}
@@ -300,8 +300,10 @@ const Index = () => {
               </div>
 
               {/* CTA */}
-              <button onClick={scrollToForm} className="flex-shrink-0 bg-gradient-to-r from-emerald-600 via-primary to-emerald-400 text-black font-body font-bold text-[11px] uppercase tracking-wider px-4 py-2.5 rounded hover:brightness-110 transition-all flex items-center gap-2">
-                Garantir Ingresso <ArrowRight className="w-3.5 h-3.5" />
+              <button onClick={scrollToForm} className="flex-shrink-0 bg-gradient-to-r from-emerald-600 via-primary to-emerald-400 text-black font-body font-bold text-[10px] sm:text-[11px] uppercase tracking-wider px-3 sm:px-4 py-2 sm:py-2.5 rounded hover:brightness-110 transition-all flex items-center gap-1.5 sm:gap-2">
+                <span className="hidden sm:inline">Garantir Ingresso</span>
+                <span className="sm:hidden">Ingresso</span>
+                <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </button>
             </div>
           </nav>
