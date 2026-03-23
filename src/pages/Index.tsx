@@ -49,6 +49,7 @@ const speakers = [
   { name: "Tiago Almeida", role: "Fundador da Felizzo", bio: "Ex-executivo com mais de 20 anos em multinacionais, liderando negócios bilionários. Marca que cresce rapidamente em Casa & Cozinha.", instagram: "https://www.instagram.com/talmeida1984/", image: null },
   { name: "Thiago Martins", role: "Fundador da China Fácil", bio: "Especialista em importação com mais de 20 anos. Diretor de grupo logístico que movimenta bilhões e conecta empresas à China.", instagram: "https://www.instagram.com/thiagoimportacao/", image: null },
   { name: "Issao Imamura", role: "Mestre em Percepção Aplicada", bio: "Referência nacional em percepção aplicada ao comportamento, comunicação e tomada de decisão. Mais de 100 mil horas de prática.", instagram: "https://www.instagram.com/issaoimamura/", image: null },
+  { name: "Dema Oliveira", role: "CEO da Goshen Land", bio: "Ex-executivo Samsung que venceu a Apple com estratégia. Já escalou mais de 600 negócios e é referência nacional em expansão empresarial.", instagram: "https://www.instagram.com/demaoliveiraoficial/", image: null },
 ];
 
 const learnings = [
@@ -68,7 +69,7 @@ const faqs = [
 
 const stats = [
   { icon: Users, value: "+50", label: "EMPRESÁRIOS", desc: "Faturando coletivamente milhões em receita anual" },
-  { icon: TrendingUp, value: "+5", label: "ESPECIALISTAS", desc: "As maiores autoridades em novo comércio do Brasil" },
+  { icon: TrendingUp, value: "+6", label: "ESPECIALISTAS", desc: "As maiores autoridades em novo comércio do Brasil" },
   { icon: MapPin, value: "SÃO PAULO", label: "PRESENCIAL", desc: "O maior evento de novo comércio do país" },
   { icon: Calendar, value: "09.04", label: "1 DIA INTENSIVO", desc: "Conte com 8 horas de imersão total" },
 ];
@@ -461,12 +462,10 @@ const Index = () => {
                     <SpeakerCard key={i} speaker={s} />
                   ))}
                 </div>
-                {/* Bottom row: 2 cards centered — same width as top cards */}
-                <div className="flex justify-center gap-4">
+                {/* Bottom row: 3 cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {speakers.slice(3).map((s, i) => (
-                    <div key={i} className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.666rem)]">
-                      <SpeakerCard speaker={s} />
-                    </div>
+                    <SpeakerCard key={i} speaker={s} />
                   ))}
                 </div>
               </motion.div>
