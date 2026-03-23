@@ -14,6 +14,11 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import carlosSpeaker from "@/assets/carlos-speaker.webp";
+import demaSpeaker from "@/assets/dema-speaker.webp";
+import issaoSpeaker from "@/assets/issao-speaker.webp";
+import lidianaSpeaker from "@/assets/lidiana-speaker.webp";
+import tiagoSpeaker from "@/assets/tiago-speaker.webp";
+import thiagoSpeaker from "@/assets/thiago-speaker.webp";
 // Hero image will be added later
 // import carlosHero from "@/assets/carlos-hero.webp";
 
@@ -45,11 +50,11 @@ const questions = [
 
 const speakers = [
   { name: "Carlos Arantes", role: "CEO da UseVertice e CTA Marketing", bio: "Empresário com mais de 10 anos em vendas online, já faturou milhões no e-commerce e ajudou empresas a crescer no digital.", instagram: "https://www.instagram.com/carlosarantesm/", image: carlosSpeaker },
-  { name: "Lidiana Kohls", role: "Fundadora da UseVertice", bio: "Empresária da moda com atuação nacional e internacional. Mentora de mulheres, unindo imagem, comportamento e posicionamento estratégico.", instagram: "https://www.instagram.com/lidianakohls/", image: null },
-  { name: "Tiago Almeida", role: "Fundador da Felizzo", bio: "Ex-executivo com mais de 20 anos em multinacionais, liderando negócios bilionários. Marca que cresce rapidamente em Casa & Cozinha.", instagram: "https://www.instagram.com/talmeida1984/", image: null },
-  { name: "Thiago Martins", role: "Fundador da China Fácil", bio: "Especialista em importação com mais de 20 anos. Diretor de grupo logístico que movimenta bilhões e conecta empresas à China.", instagram: "https://www.instagram.com/thiagoimportacao/", image: null },
-  { name: "Issao Imamura", role: "Mestre em Percepção Aplicada", bio: "Referência nacional em percepção aplicada ao comportamento, comunicação e tomada de decisão. Mais de 100 mil horas de prática.", instagram: "https://www.instagram.com/issaoimamura/", image: null },
-  { name: "Dema Oliveira", role: "CEO da Goshen Land", bio: "Ex-executivo Samsung que venceu a Apple com estratégia. Já escalou mais de 600 negócios e é referência nacional em expansão empresarial.", instagram: "https://www.instagram.com/demaoliveiraoficial/", image: null },
+  { name: "Lidiana Kohls", role: "Fundadora da UseVertice", bio: "Empresária da moda com atuação nacional e internacional. Mentora de mulheres, unindo imagem, comportamento e posicionamento estratégico.", instagram: "https://www.instagram.com/lidianakohls/", image: lidianaSpeaker },
+  { name: "Tiago Almeida", role: "Fundador da Felizzo", bio: "Ex-executivo com mais de 20 anos em multinacionais, liderando negócios bilionários. Marca que cresce rapidamente em Casa & Cozinha.", instagram: "https://www.instagram.com/talmeida1984/", image: tiagoSpeaker },
+  { name: "Thiago Martins", role: "Fundador da China Fácil", bio: "Especialista em importação com mais de 20 anos. Diretor de grupo logístico que movimenta bilhões e conecta empresas à China.", instagram: "https://www.instagram.com/thiagoimportacao/", image: thiagoSpeaker },
+  { name: "Issao Imamura", role: "Mestre em Percepção Aplicada", bio: "Referência nacional em percepção aplicada ao comportamento, comunicação e tomada de decisão. Mais de 100 mil horas de prática.", instagram: "https://www.instagram.com/issaoimamura/", image: issaoSpeaker },
+  { name: "Dema Oliveira", role: "CEO da Goshen Land", bio: "Ex-executivo Samsung que venceu a Apple com estratégia. Já escalou mais de 600 negócios e é referência nacional em expansão empresarial.", instagram: "https://www.instagram.com/demaoliveiraoficial/", image: demaSpeaker },
 ];
 
 const learnings = [
@@ -139,7 +144,7 @@ const CtaButton = ({ children, onClick, className = "" }: { children: React.Reac
 const SpeakerCard = ({ speaker: s }: { speaker: typeof speakers[0] }) => (
   <motion.div variants={scaleIn} className="group relative rounded-2xl overflow-hidden bg-[#1A1A1A] border border-white/5 hover:border-primary/20 transition-all duration-500 h-full">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-primary rounded-b z-20" />
-    <div className="relative h-52 overflow-hidden">
+    <div className="relative h-72 overflow-hidden">
       {s.image ? (
         <img src={s.image} alt={s.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
       ) : (
@@ -147,7 +152,7 @@ const SpeakerCard = ({ speaker: s }: { speaker: typeof speakers[0] }) => (
           <span className="font-display text-5xl text-primary/15">{s.name.split(" ").map(n => n[0]).join("")}</span>
         </div>
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
       <a href={s.instagram} target="_blank" rel="noopener noreferrer" className="absolute top-3 right-3 w-8 h-8 rounded bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-primary/20 hover:border-primary/40 transition-all z-10">
         <Instagram className="w-3.5 h-3.5 text-white/60" />
       </a>
@@ -268,7 +273,7 @@ const Index = () => {
 
           {/* ══ NAV — V4 style: logo | urgency | countdown | CTA ══ */}
           <nav className="fixed top-0 left-0 right-0 z-[5000] bg-[rgba(3,12,24,0.92)] backdrop-blur-[12px]">
-            <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-2 sm:gap-4">
+            <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-[72px] flex items-center justify-between gap-2 sm:gap-4">
               {/* Logo */}
               <span className="font-display text-[11px] sm:text-base tracking-tight flex-shrink-0">
                 <span className="text-white">FÓRUM</span>
@@ -283,19 +288,22 @@ const Index = () => {
                 <span className="text-white/60">QUE </span><span className="text-white font-bold underline">AS VAGAS SE ESGOTEM!</span>
               </div>
 
-              {/* Countdown mini — V4 style red numbers */}
-              <div className="hidden sm:flex items-center gap-1 text-xs font-body">
+              {/* Countdown — V4 style: card-bg boxes with labels */}
+              <div className="hidden sm:flex items-center gap-1 font-body">
                 {[
                   { v: countdown.days, l: "DIAS" },
-                  { v: countdown.hours, l: "HRS" },
-                  { v: countdown.minutes, l: "MIN" },
-                  { v: countdown.seconds, l: "SEG" },
+                  { v: countdown.hours, l: "HORAS" },
+                  { v: countdown.minutes, l: "MINUTOS" },
+                  { v: countdown.seconds, l: "SEGUNDOS" },
                 ].map((u, i) => (
                   <div key={i} className="flex items-center gap-1">
-                    <div className="bg-[#1A1A1A] border border-white/10 rounded px-1.5 py-0.5 min-w-[28px] text-center">
-                      <span className="text-primary font-bold text-sm tabular-nums">{String(u.v).padStart(2, "0")}</span>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-[#1A1A1A] border border-white/10 rounded-md px-2 py-1 min-w-[38px] text-center">
+                        <span className="text-primary font-extrabold text-base tabular-nums leading-none">{String(u.v).padStart(2, "0")}</span>
+                      </div>
+                      <span className="text-[7px] text-white/40 font-bold tracking-wider mt-0.5">{u.l}</span>
                     </div>
-                    {i < 3 && <span className="text-primary font-bold">:</span>}
+                    {i < 3 && <span className="text-primary font-bold text-sm -mt-3">:</span>}
                   </div>
                 ))}
               </div>
@@ -310,7 +318,7 @@ const Index = () => {
           </nav>
 
           {/* ══ HERO — V4 style: full-bleed image, centered text overlay ══ */}
-          <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-14">
+          <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16 sm:pt-[72px]">
             {/* Background — placeholder until hero image is added */}
             <div className="absolute inset-0 bg-background" />
             <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] via-transparent to-background" />
@@ -551,7 +559,7 @@ const Index = () => {
                 <motion.form variants={fadeUp} onSubmit={handleSubmit} className="bg-[#1A1A1A] border border-white/5 rounded-2xl p-6 sm:p-8 space-y-5">
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-[11px] text-white/40 font-body font-medium">Progresso</span>
+                      <span className="text-[11px] text-white font-body font-medium">Progresso</span>
                       <span className="text-[11px] text-primary font-body font-bold">{progress}%</span>
                     </div>
                     <div className="h-1 bg-white/10 rounded-full overflow-hidden">
@@ -561,18 +569,18 @@ const Index = () => {
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5 sm:col-span-2">
-                      <Label htmlFor="nome" className="text-xs font-body font-medium text-white/60">Nome completo</Label>
-                      <Input id="nome" placeholder="Seu nome completo" value={formData.nome || ""} onChange={(e) => handleChange("nome", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.nome ? "border-yellow-500" : ""}`} />
+                      <Label htmlFor="nome" className="text-xs font-body font-medium text-white">Nome completo</Label>
+                      <Input id="nome" placeholder="Seu nome completo" value={formData.nome || ""} onChange={(e) => handleChange("nome", e.target.value)} className={`h-11 bg-black/30 border-white/15 text-white/70 placeholder:text-white/25 ${errors.nome ? "border-yellow-500" : ""}`} />
                       {errors.nome && <p className="text-[11px] text-yellow-400">{errors.nome}</p>}
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="email" className="text-xs font-body font-medium text-white/60">E-mail</Label>
-                      <Input id="email" type="email" placeholder="seu@email.com" value={formData.email || ""} onChange={(e) => handleChange("email", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.email ? "border-yellow-500" : ""}`} />
+                      <Label htmlFor="email" className="text-xs font-body font-medium text-white">E-mail</Label>
+                      <Input id="email" type="email" placeholder="seu@email.com" value={formData.email || ""} onChange={(e) => handleChange("email", e.target.value)} className={`h-11 bg-black/30 border-white/15 text-white/70 placeholder:text-white/25 ${errors.email ? "border-yellow-500" : ""}`} />
                       {errors.email && <p className="text-[11px] text-yellow-400">{errors.email}</p>}
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="telefone" className="text-xs font-body font-medium text-white/60">WhatsApp</Label>
-                      <Input id="telefone" type="text" inputMode="numeric" placeholder="(11) 99999-9999" value={formData.telefone || ""} onChange={(e) => handleChange("telefone", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.telefone ? "border-yellow-500" : ""}`} />
+                      <Label htmlFor="telefone" className="text-xs font-body font-medium text-white">WhatsApp</Label>
+                      <Input id="telefone" type="text" inputMode="numeric" placeholder="(11) 99999-9999" value={formData.telefone || ""} onChange={(e) => handleChange("telefone", e.target.value)} className={`h-11 bg-black/30 border-white/15 text-white/70 placeholder:text-white/25 ${errors.telefone ? "border-yellow-500" : ""}`} />
                       {errors.telefone && <p className="text-[11px] text-yellow-400">{errors.telefone}</p>}
                     </div>
                   </div>
@@ -585,9 +593,9 @@ const Index = () => {
 
                   {questions.map((q) => (
                     <div key={q.name} className="space-y-1.5">
-                      <Label className="text-xs font-body font-medium text-white/60">{q.label}</Label>
+                      <Label className="text-xs font-body font-medium text-white">{q.label}</Label>
                       <Select value={formData[q.name] || ""} onValueChange={(val) => handleChange(q.name, val)}>
-                        <SelectTrigger className={`h-11 bg-black/30 border-white/10 text-white ${errors[q.name] ? "border-yellow-500" : ""}`}>
+                        <SelectTrigger className={`h-11 bg-black/30 border-white/15 text-white/70 ${errors[q.name] ? "border-yellow-500" : ""}`}>
                           <SelectValue placeholder="Selecione uma opção" />
                         </SelectTrigger>
                         <SelectContent>
