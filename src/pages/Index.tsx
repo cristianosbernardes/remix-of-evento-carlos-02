@@ -49,7 +49,7 @@ const questions = [
 ];
 
 const speakers = [
-  { name: "Carlos Arantes", role: "CEO da UseVertice e CTA Marketing", bio: "Empresário com mais de 10 anos em vendas online, já faturou milhões no e-commerce e ajudou empresas a crescer no digital.", instagram: "https://www.instagram.com/carlosarantesm/", image: carlosSpeaker },
+  { name: "Carlos Arantes", role: "CEO da UseVertice e CTA Marketing", bio: "Empresário com mais de 10 anos em vendas online, já faturou milhões no e-commerce e ajudou empresas a crescer no digital.", instagram: "https://www.instagram.com/carlosarantesm/", image: carlosSpeaker, imagePos: "center 0%" },
   { name: "Lidiana Kohls", role: "Fundadora da UseVertice", bio: "Empresária da moda com atuação nacional e internacional. Mentora de mulheres, unindo imagem, comportamento e posicionamento estratégico.", instagram: "https://www.instagram.com/lidianakohls/", image: lidianaSpeaker },
   { name: "Tiago Almeida", role: "Fundador da Felizzo", bio: "Ex-executivo com mais de 20 anos em multinacionais, liderando negócios bilionários. Marca que cresce rapidamente em Casa & Cozinha.", instagram: "https://www.instagram.com/talmeida1984/", image: tiagoSpeaker },
   { name: "Thiago Martins", role: "Fundador da China Fácil", bio: "Especialista em importação com mais de 20 anos. Diretor de grupo logístico que movimenta bilhões e conecta empresas à China.", instagram: "https://www.instagram.com/thiagoimportacao/", image: thiagoSpeaker },
@@ -146,7 +146,7 @@ const SpeakerCard = ({ speaker: s }: { speaker: typeof speakers[0] }) => (
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-primary rounded-b z-20" />
     <div className="relative h-72 overflow-hidden">
       {s.image ? (
-        <img src={s.image} alt={s.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
+        <img src={s.image} alt={s.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" style={{ objectPosition: (s as any).imagePos || "center top" }} />
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-transparent">
           <span className="font-display text-5xl text-primary/15">{s.name.split(" ").map(n => n[0]).join("")}</span>
