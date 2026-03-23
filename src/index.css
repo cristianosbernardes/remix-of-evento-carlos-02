@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,23 +6,23 @@
 
 @layer base {
   :root {
-    --background: 160 20% 4%;
-    --foreground: 0 0% 95%;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 100%;
 
-    --card: 160 15% 7%;
-    --card-foreground: 0 0% 95%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 160 15% 7%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 100%;
 
     --primary: 155 90% 52%;
     --primary-foreground: 160 20% 4%;
 
-    --secondary: 160 15% 12%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 0 0% 11%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 160 10% 15%;
-    --muted-foreground: 160 10% 55%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 55%;
 
     --accent: 155 90% 55%;
     --accent-foreground: 160 20% 4%;
@@ -30,8 +30,8 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 95%;
 
-    --border: 160 15% 15%;
-    --input: 160 15% 15%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
     --ring: 155 90% 52%;
 
     --radius: 0.75rem;
@@ -59,11 +59,13 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Dela Gothic One', sans-serif;
+    font-weight: 400;
   }
 
   /* Custom scrollbar */
@@ -72,21 +74,21 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(160 20% 4%);
+    background: hsl(0 0% 4%);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(155 80% 45%);
+    background: hsl(0 0% 25%);
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(155 80% 55%);
+    background: hsl(155 80% 45%);
   }
 
   /* Firefox */
   html {
-    scrollbar-color: hsl(155, 80%, 45%) hsl(160, 20%, 4%);
+    scrollbar-color: hsl(0, 0%, 25%) hsl(0, 0%, 4%);
     scrollbar-width: thin;
   }
 }
@@ -206,4 +208,29 @@
 
 .animate-pulse-ring {
   animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee-reverse 25s linear infinite;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

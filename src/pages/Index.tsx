@@ -4,19 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  CheckCircle2, Loader2, Send, Calendar, MapPin, ArrowDown,
-  Users, TrendingUp, ShoppingCart, Shield, Star,
+  CheckCircle2, Loader2, Send, Calendar, MapPin, ArrowRight,
+  Users, TrendingUp, ShoppingCart, Shield, Instagram,
+  Plus, Minus, Zap, Target, Lightbulb,
 } from "lucide-react";
 import { z } from "zod";
 import carlosSpeaker from "@/assets/carlos-speaker.webp";
 import carlosHero from "@/assets/carlos-hero.webp";
+
+/* ═══════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════ */
 
 const GOOGLE_SHEETS_URL = "";
 
@@ -30,44 +31,51 @@ const formSchema = z.object({
   principalDesafio: z.string().min(1, "Selecione uma opção"),
   interesseEvento: z.string().min(1, "Selecione uma opção"),
 });
-
 type FormData = z.infer<typeof formSchema>;
 
 const questions = [
-  {
-    name: "vendeInternet" as const,
-    label: "Você já vende pela internet hoje?",
-    options: ["Sim, vendo todos os dias", "Sim, mas ainda estou estruturando", "Já tentei vender online", "Ainda não vendo online"],
-  },
-  {
-    name: "canalVenda" as const,
-    label: "Como sua empresa vende atualmente?",
-    options: ["Loja física", "E-commerce próprio", "Marketplaces (Shopee, Mercado Livre, Amazon)", "Redes sociais", "Ainda não vendo"],
-  },
-  {
-    name: "regimeTributario" as const,
-    label: "Qual o regime tributário da sua empresa?",
-    options: ["Ainda não tenho empresa", "MEI", "Simples Nacional", "Lucro Presumido", "Lucro Real", "Não sei informar"],
-  },
-  {
-    name: "principalDesafio" as const,
-    label: "Qual o principal desafio do seu negócio hoje?",
-    options: ["Aumentar vendas", "Atrair mais clientes", "Estruturar vendas online", "Escalar o negócio", "Encontrar novos produtos"],
-  },
-  {
-    name: "interesseEvento" as const,
-    label: "Interesse em evento presencial em São Paulo?",
-    options: ["Sim, quero participar", "Quero mais informações", "Apenas estou pesquisando"],
-  },
+  { name: "vendeInternet" as const, label: "Você já vende pela internet hoje?", options: ["Sim, vendo todos os dias", "Sim, mas ainda estou estruturando", "Já tentei vender online", "Ainda não vendo online"] },
+  { name: "canalVenda" as const, label: "Como sua empresa vende atualmente?", options: ["Loja física", "E-commerce próprio", "Marketplaces (Shopee, Mercado Livre, Amazon)", "Redes sociais", "Ainda não vendo"] },
+  { name: "regimeTributario" as const, label: "Qual o regime tributário da sua empresa?", options: ["Ainda não tenho empresa", "MEI", "Simples Nacional", "Lucro Presumido", "Lucro Real", "Não sei informar"] },
+  { name: "principalDesafio" as const, label: "Qual o principal desafio do seu negócio hoje?", options: ["Aumentar vendas", "Atrair mais clientes", "Estruturar vendas online", "Escalar o negócio", "Encontrar novos produtos"] },
+  { name: "interesseEvento" as const, label: "Interesse em evento presencial em São Paulo?", options: ["Sim, quero participar", "Quero mais informações", "Apenas estou pesquisando"] },
 ];
 
-const highlights = [
-  { icon: ShoppingCart, label: "E-commerce & Marketplaces" },
-  { icon: TrendingUp, label: "Tráfego Pago & Funis" },
-  { icon: Users, label: "Networking Estratégico" },
+const speakers = [
+  { name: "Carlos Arantes", role: "CEO da UseVertice e CTA Marketing", bio: "Empresário com mais de 10 anos em vendas online, já faturou milhões no e-commerce e ajudou empresas a crescer no digital.", instagram: "https://www.instagram.com/carlosarantesm/", image: carlosSpeaker },
+  { name: "Lidiana Kohls", role: "Fundadora da UseVertice", bio: "Empresária da moda com atuação nacional e internacional. Mentora de mulheres, unindo imagem, comportamento e posicionamento estratégico.", instagram: "https://www.instagram.com/lidianakohls/", image: null },
+  { name: "Tiago Almeida", role: "Fundador da Felizzo", bio: "Ex-executivo com mais de 20 anos em multinacionais, liderando negócios bilionários. Marca que cresce rapidamente em Casa & Cozinha.", instagram: "https://www.instagram.com/talmeida1984/", image: null },
+  { name: "Thiago Martins", role: "Fundador da China Fácil", bio: "Especialista em importação com mais de 20 anos. Diretor de grupo logístico que movimenta bilhões e conecta empresas à China.", instagram: "https://www.instagram.com/thiagoimportacao/", image: null },
+  { name: "Issao Imamura", role: "Mestre em Percepção Aplicada", bio: "Referência nacional em percepção aplicada ao comportamento, comunicação e tomada de decisão. Mais de 100 mil horas de prática.", instagram: "https://www.instagram.com/issaoimamura/", image: null },
+];
+
+const learnings = [
+  { number: "01", title: "E-COMMERCE & MARKETPLACES", subtitle: "Domine os canais de venda", desc: "Estratégias práticas para vender em Shopee, Mercado Livre, Amazon e criar seu e-commerce próprio com alta conversão.", icon: ShoppingCart, bullets: ["Marketplaces que mais vendem", "Precificação estratégica", "Escala de operações"] },
+  { number: "02", title: "TRÁFEGO PAGO & FUNIS", subtitle: "Atraia clientes qualificados", desc: "Aprenda a criar campanhas que geram vendas reais e funis que transformam visitantes em compradores.", icon: Target, bullets: ["Meta Ads & Google Ads", "Funis de alta conversão", "Retorno sobre investimento"] },
+  { number: "03", title: "NETWORKING COM EMPRESÁRIOS", subtitle: "Conexões que valem milhões", desc: "Os maiores negócios não nascem na palestra. Nascem no intervalo, no jantar, no lounge.", icon: Users, bullets: ["Acesso a empresários reais", "Parcerias estratégicas", "Troca de experiências"] },
+  { number: "04", title: "IMPORTAÇÃO & MARCA PRÓPRIA", subtitle: "Da China ao seu cliente", desc: "O caminho completo para importar produtos, criar sua marca própria e multiplicar suas margens.", icon: Zap, bullets: ["Fornecedores confiáveis", "Processo de importação", "Construção de marca"] },
+];
+
+const faqs = [
+  { q: "O evento é presencial ou online?", a: "O Fórum Novo Comércio é 100% presencial, em São Paulo. A experiência ao vivo, o networking e a imersão são fundamentais." },
+  { q: "Preciso ter uma empresa para participar?", a: "Não. O evento é para quem já tem empresa e quer escalar, mas também para quem está começando." },
+  { q: "Como funciona o credenciamento?", a: "Após o cadastro, você receberá um e-mail com todas as instruções de credenciamento, horários e local exato." },
+  { q: "Terá alimentação no local?", a: "Sim! O evento contará com coffee breaks e opções de alimentação durante todo o dia." },
+  { q: "Qual o horário do evento?", a: "Das 10h às 18h, com intervalos para networking e alimentação. Chegue 30 min antes." },
+];
+
+const stats = [
+  { icon: Users, value: "+50", label: "EMPRESÁRIOS", desc: "Faturando coletivamente milhões em receita anual" },
+  { icon: TrendingUp, value: "+5", label: "ESPECIALISTAS", desc: "As maiores autoridades em novo comércio do Brasil" },
+  { icon: MapPin, value: "SÃO PAULO", label: "PRESENCIAL", desc: "O maior evento de novo comércio do país" },
+  { icon: Calendar, value: "09.04", label: "1 DIA INTENSIVO", desc: "Conte com 8 horas de imersão total" },
 ];
 
 const EVENT_DATE = new Date("2026-04-09T10:00:00");
+
+/* ═══════════════════════════════════════════
+   HOOKS & ANIMATIONS
+   ═══════════════════════════════════════════ */
 
 const useCountdown = () => {
   const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -75,12 +83,7 @@ const useCountdown = () => {
     const calc = () => {
       const diff = EVENT_DATE.getTime() - Date.now();
       if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-      return {
-        days: Math.floor(diff / 86400000),
-        hours: Math.floor((diff / 3600000) % 24),
-        minutes: Math.floor((diff / 60000) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-      };
+      return { days: Math.floor(diff / 86400000), hours: Math.floor((diff / 3600000) % 24), minutes: Math.floor((diff / 60000) % 60), seconds: Math.floor((diff / 1000) % 60) };
     };
     setTime(calc());
     const id = setInterval(() => setTime(calc()), 1000);
@@ -90,27 +93,95 @@ const useCountdown = () => {
 };
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+};
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
+/* ═══════════════════════════════════════════
+   SUB-COMPONENTS
+   ═══════════════════════════════════════════ */
+
+/* V4-style section label — red dot + uppercase text */
+const SectionLabel = ({ text }: { text: string }) => (
+  <p className="flex items-center justify-center gap-2 text-primary font-body text-sm font-semibold uppercase tracking-[0.15em] mb-4">
+    <span className="w-2 h-2 rounded-full bg-primary" />
+    {text}
+  </p>
+);
+
+/* V4-style heading — Dela Gothic One, 32px, with highlighted span */
+const SectionHeading = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <h2 className={`font-display text-[clamp(1.5rem,4vw,2rem)] leading-[1.3] text-center ${className}`}>
+    {children}
+  </h2>
+);
+
+/* V4-style CTA button */
+const CtaButton = ({ children, onClick, className = "" }: { children: React.ReactNode; onClick: () => void; className?: string }) => (
+  <button
+    onClick={onClick}
+    className={`inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 via-primary to-emerald-400 text-primary-foreground font-body font-bold text-sm uppercase tracking-[0.1em] px-8 py-4 rounded hover:brightness-110 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 ${className}`}
+  >
+    {children}
+    <ArrowRight className="w-5 h-5" />
+  </button>
+);
+
+/* X-shaped marquee bands */
+const MarqueeBand = ({ reverse = false }: { reverse?: boolean }) => (
+  <div className="relative overflow-hidden py-3">
+    <div className={`flex ${reverse ? "animate-marquee-reverse" : "animate-marquee"} whitespace-nowrap`}>
+      {Array.from({ length: 16 }).map((_, i) => (
+        <span key={i} className="mx-6 font-display text-sm sm:text-base tracking-[0.1em] uppercase">
+          <span className="text-white/90">FÓRUM NOVO</span>
+          <span className="text-primary ml-1.5">COMÉRCIO</span>
+          <span className="text-white/30 ml-1.5">2026</span>
+          <span className="inline-block mx-5 text-primary/50">◆</span>
+        </span>
+      ))}
+    </div>
+  </div>
+);
+
+/* FAQ Item — V4 style */
+const FaqItem = ({ item, isOpen, toggle }: { item: typeof faqs[0]; isOpen: boolean; toggle: () => void }) => (
+  <motion.div variants={fadeUp} className={`border rounded-lg transition-all duration-300 ${isOpen ? "border-primary/40 bg-white/[0.03]" : "border-white/10 hover:border-white/20"}`}>
+    <button onClick={toggle} className="w-full flex items-center justify-between p-5 text-left gap-4">
+      <span className={`font-body font-semibold text-[15px] transition-colors ${isOpen ? "text-primary" : "text-white"}`}>{item.q}</span>
+      <span className={`flex-shrink-0 w-7 h-7 rounded flex items-center justify-center transition-all ${isOpen ? "bg-primary text-black" : "bg-white/10 text-white/50"}`}>
+        {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+      </span>
+    </button>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden">
+          <p className="px-5 pb-5 text-sm text-white/50 font-body leading-relaxed">{item.a}</p>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </motion.div>
+);
+
+/* ═══════════════════════════════════════════
+   MAIN COMPONENT
+   ═══════════════════════════════════════════ */
 
 const Index = () => {
   const [formData, setFormData] = useState<Partial<FormData>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
   const countdown = useCountdown();
 
   const handleChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => { const n = { ...prev }; delete n[field]; return n; });
-    }
+    if (errors[field]) setErrors((prev) => { const n = { ...prev }; delete n[field]; return n; });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -125,437 +196,445 @@ const Index = () => {
     }
     setIsSubmitting(true);
     try {
-      if (GOOGLE_SHEETS_URL) {
-        await fetch(GOOGLE_SHEETS_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(result.data) });
-      }
+      if (GOOGLE_SHEETS_URL) await fetch(GOOGLE_SHEETS_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(result.data) });
       setIsSubmitted(true);
-    } catch {
-      setErrors({ form: "Erro ao enviar. Tente novamente." });
-    } finally {
-      setIsSubmitting(false);
-    }
+    } catch { setErrors({ form: "Erro ao enviar. Tente novamente." }); }
+    finally { setIsSubmitting(false); }
   };
 
-  const scrollToForm = () => {
-    document.getElementById("formulario")?.scrollIntoView({ behavior: "smooth" });
-  };
-
+  const scrollToForm = () => document.getElementById("formulario")?.scrollIntoView({ behavior: "smooth" });
   const filledCount = Object.keys(formData).filter((k) => formData[k as keyof FormData]).length;
-  const totalFields = 8;
-  const progress = Math.round((filledCount / totalFields) * 100);
+  const progress = Math.round((filledCount / 8) * 100);
 
   return (
     <AnimatePresence mode="wait">
       {isSubmitted ? (
-        <motion.div
-          key="success"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="min-h-screen bg-background flex items-center justify-center px-4"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center max-w-md"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center mx-auto mb-8"
-            >
+        <motion.div key="success" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-background flex items-center justify-center px-4">
+          <motion.div initial={{ opacity: 0, scale: 0.85, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} className="text-center max-w-md">
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }} className="w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center mx-auto mb-8">
               <CheckCircle2 className="w-12 h-12 text-primary" />
             </motion.div>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Cadastro Realizado!
-            </h2>
-            <p className="text-muted-foreground text-base leading-relaxed">
-              Suas informações foram enviadas com sucesso.<br />
-              Em breve nossa equipe entrará em contato com mais detalhes sobre o evento.
-            </p>
-            <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/20 text-primary text-sm font-display">
-              <Calendar className="w-4 h-4" />
-              Nos vemos em 09 de Abril!
+            <h2 className="font-display text-[2rem] text-white mb-4">Cadastro Realizado!</h2>
+            <p className="text-white/50 font-body text-base leading-relaxed">Suas informações foram enviadas com sucesso.<br />Em breve nossa equipe entrará em contato.</p>
+            <div className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded bg-primary/5 border border-primary/20 text-primary text-sm font-body font-semibold">
+              <Calendar className="w-4 h-4" /> Nos vemos em 09 de Abril!
             </div>
           </motion.div>
         </motion.div>
       ) : (
-        <motion.div key="page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-background text-foreground overflow-x-hidden">
-          {/* ── FLOATING NAV ── */}
-          <nav className="fixed top-0 left-0 right-0 z-50 glass-strong border-b border-border/40">
-            <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-              <span className="font-display font-bold text-base tracking-tight">
-                <span className="text-gradient">FNC</span>
-                <span className="text-muted-foreground ml-1 text-xs font-medium">2026</span>
+        <motion.div key="page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-background text-white overflow-x-hidden">
+
+          {/* ══ NAV — V4 style: logo | urgency | countdown | CTA ══ */}
+          <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/5">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+              {/* Logo */}
+              <span className="font-display text-sm sm:text-base tracking-tight flex-shrink-0">
+                <span className="text-white">FÓRUM</span>
+                <span className="text-primary ml-1">NOVO COMÉRCIO</span>
+                <span className="text-white/30 ml-1 text-[10px]">2026</span>
               </span>
-              <Button
-                size="sm"
-                onClick={scrollToForm}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold text-xs uppercase tracking-wider h-8 px-4"
-              >
-                Inscreva-se
-              </Button>
+
+              {/* Urgency text — 2 lines like V4 */}
+              <div className="hidden md:block text-center font-body font-medium text-[13px] leading-tight">
+                <span className="text-white/60">GARANTA SEU INGRESSO ANTES</span>
+                <br />
+                <span className="text-white/60">QUE </span><span className="text-white font-bold underline">AS VAGAS SE ESGOTEM!</span>
+              </div>
+
+              {/* Countdown mini — V4 style red numbers */}
+              <div className="hidden sm:flex items-center gap-1 text-xs font-body">
+                {[
+                  { v: countdown.days, l: "DIAS" },
+                  { v: countdown.hours, l: "HRS" },
+                  { v: countdown.minutes, l: "MIN" },
+                  { v: countdown.seconds, l: "SEG" },
+                ].map((u, i) => (
+                  <div key={i} className="flex items-center gap-1">
+                    <div className="bg-[#1A1A1A] border border-white/10 rounded px-1.5 py-0.5 min-w-[28px] text-center">
+                      <span className="text-primary font-bold text-sm tabular-nums">{String(u.v).padStart(2, "0")}</span>
+                    </div>
+                    {i < 3 && <span className="text-primary font-bold">:</span>}
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <button onClick={scrollToForm} className="flex-shrink-0 bg-gradient-to-r from-emerald-600 via-primary to-emerald-400 text-black font-body font-bold text-[11px] uppercase tracking-wider px-4 py-2.5 rounded hover:brightness-110 transition-all flex items-center gap-2">
+                Garantir Ingresso <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </nav>
 
-          {/* ── HERO ── */}
-          <section className="relative min-h-screen flex items-center overflow-hidden pt-14">
-            {/* Background layers */}
-            <div className="absolute inset-0 bg-grid opacity-30" />
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] via-transparent to-background" />
-            <div className="absolute top-1/3 -left-32 w-[500px] h-[500px] bg-primary/[0.06] rounded-full blur-[180px]" />
-            <div className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] bg-primary/[0.04] rounded-full blur-[150px]" />
-
-            <div className="max-w-6xl mx-auto px-6 relative z-10 w-full py-16 sm:py-20">
-              <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                {/* Left */}
-                <motion.div initial="hidden" animate="visible" variants={stagger}>
-                  <motion.div variants={fadeUp} className="mb-6">
-                    <span className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-xs font-display uppercase tracking-[0.2em] text-primary">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-                      </span>
-                      Vagas Limitadas
-                    </span>
-                  </motion.div>
-
-                  <motion.h1
-                    variants={fadeUp}
-                    className="font-display text-[2.75rem] sm:text-5xl lg:text-[3.75rem] font-bold mb-6 tracking-tight leading-[0.92]"
-                  >
-                    FÓRUM NOVO
-                    <br />
-                    <span className="text-gradient glow-text-strong">COMÉRCIO</span>
-                    <span className="text-foreground/25 text-lg sm:text-xl ml-3 font-light align-middle">2026</span>
-                  </motion.h1>
-
-                  <motion.div variants={fadeUp} className="mb-6">
-                    <div className="w-12 h-[2px] bg-gradient-to-r from-primary to-transparent mb-5" />
-                    <p className="text-lg sm:text-xl font-display font-semibold leading-snug">
-                      O comércio mudou.
-                      <br />
-                      <span className="text-primary">Quem não se adaptar, vai desaparecer.</span>
-                    </p>
-                  </motion.div>
-
-                  <motion.p variants={fadeUp} className="text-foreground/45 text-sm sm:text-[15px] max-w-lg mb-7 leading-relaxed">
-                    Enquanto muitos tentam entender o que aconteceu,{" "}
-                    <span className="text-foreground/80 font-medium">empresários visionários já faturam milhões</span>{" "}
-                    dominando e-commerce, tráfego pago, importação e marca própria.
-                  </motion.p>
-
-                  {/* Highlights */}
-                  <motion.div variants={fadeUp} className="flex flex-wrap gap-3 mb-7">
-                    {highlights.map((h, i) => (
-                      <span key={i} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border text-xs font-medium text-foreground/70">
-                        <h.icon className="w-3.5 h-3.5 text-primary" />
-                        {h.label}
-                      </span>
-                    ))}
-                  </motion.div>
-
-                  {/* Date & Location */}
-                  <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-5 text-sm text-foreground/50 mb-8">
-                    <span className="inline-flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Calendar className="w-4 h-4 text-primary" />
-                      </div>
-                      <span>
-                        <span className="block text-foreground font-medium text-[13px]">09 de Abril, 2026</span>
-                        <span className="text-[11px] text-foreground/40">10h às 18h</span>
-                      </span>
-                    </span>
-                    <span className="inline-flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <MapPin className="w-4 h-4 text-primary" />
-                      </div>
-                      <span>
-                        <span className="block text-foreground font-medium text-[13px]">São Paulo, SP</span>
-                        <span className="text-[11px] text-foreground/40">Local a confirmar</span>
-                      </span>
-                    </span>
-                  </motion.div>
-
-                  <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-start gap-4">
-                    <Button
-                      size="lg"
-                      onClick={scrollToForm}
-                      className="bg-primary text-primary-foreground hover:bg-primary/90 font-display font-bold text-sm uppercase tracking-wider px-10 py-7 group glow-green"
-                    >
-                      Garantir Minha Vaga
-                      <ArrowDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform" />
-                    </Button>
-                  </motion.div>
-
-                  {/* Trust & Urgency */}
-                  <motion.div variants={fadeUp} className="mt-4 space-y-1.5">
-                    <p className="text-xs text-foreground/40">
-                      Pagamento seguro · Cartão, PIX ou boleto
-                    </p>
-                    <p className="text-xs text-primary font-medium flex items-center gap-1.5">
-                      <span className="text-yellow-500">⚠</span> Últimas vagas · Preço pode aumentar sem aviso
-                    </p>
-                  </motion.div>
-
-                  {/* Social proof */}
-                  <motion.div variants={fadeUp} className="mt-6 flex items-center gap-3">
-                    <div className="flex -space-x-2">
-                      {[0, 1, 2, 3].map((i) => (
-                        <div key={i} className="w-7 h-7 rounded-full bg-secondary border-2 border-background flex items-center justify-center">
-                          <Users className="w-3 h-3 text-foreground/40" />
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-xs text-foreground/40">
-                      <span className="text-foreground/70 font-medium">+200 empresários</span> já se cadastraram
-                    </p>
-                  </motion.div>
-                </motion.div>
-
-                {/* Right: Speaker */}
-                <motion.div
-                  initial={{ opacity: 0, x: 50, scale: 0.95 }}
-                  animate={{ opacity: 1, x: 0, scale: 1 }}
-                  transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                  className="hidden lg:block relative"
-                >
-                  <div className="absolute -inset-20 bg-primary/[0.05] rounded-full blur-[140px]" />
-                  <div className="relative rounded-3xl overflow-hidden border border-border/50">
-                    <div
-                      style={{
-                        WebkitMaskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
-                        maskImage: "linear-gradient(to bottom, black 60%, transparent 100%)",
-                      }}
-                    >
-                      <img
-                        src={carlosHero}
-                        alt="Carlos Arantes — Palestrante do Fórum Novo Comércio 2026"
-                        className="w-full h-auto object-cover brightness-110"
-                      />
-                    </div>
-                    {/* Speaker card overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-card via-card/90 to-transparent">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center">
-                          <Star className="w-5 h-5 text-primary" />
-                        </div>
-                        <div>
-                          <p className="font-display text-sm font-bold text-foreground">Carlos Arantes</p>
-                          <p className="text-xs text-foreground/50">Palestrante Principal • Especialista em Novo Comércio</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
+          {/* ══ HERO — V4 style: full-bleed image, centered text overlay ══ */}
+          <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-14">
+            {/* Background image */}
+            <div className="absolute inset-0">
+              <img src={carlosHero} alt="" className="w-full h-full object-cover object-top opacity-30 scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-background" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/60" />
             </div>
 
-            {/* Scroll indicator */}
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 text-foreground/20"
-            >
-              <ArrowDown className="w-5 h-5" />
-            </motion.div>
+            {/* Content */}
+            <div className="relative z-10 text-center px-6 max-w-4xl mx-auto flex flex-col items-center">
+              <motion.div initial="hidden" animate="visible" variants={stagger} className="flex flex-col items-center">
+                {/* Badge */}
+                <motion.div variants={fadeUp}>
+                  <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-[13px] font-body text-white/70">
+                    <Zap className="w-4 h-4 text-primary" />
+                    A diferença não é esforço. <span className="text-primary font-bold">É perspectiva.</span>
+                  </span>
+                </motion.div>
+
+                {/* Headline — V4: Dela Gothic One 38px */}
+                <motion.h1 variants={fadeUp} className="font-display text-[clamp(1.75rem,5.5vw,2.4rem)] mt-8 leading-[1.35] uppercase">
+                  Corre o dia inteiro. No fim, a empresa{" "}
+                  <span className="text-primary">continua no mesmo lugar</span>
+                </motion.h1>
+
+                {/* Subtitle — V4: Montserrat 500 20px */}
+                <motion.p variants={fadeUp} className="mt-6 text-white/60 font-body font-medium text-base sm:text-xl max-w-2xl leading-[1.4]">
+                  Enquanto você vive como refém das urgências, <span className="text-white font-semibold">seus concorrentes já desenharam os próximos 10 anos</span> de seus negócios.
+                </motion.p>
+
+                {/* CTA — V4: red bg, bold, uppercase, arrow */}
+                <motion.div variants={fadeUp} className="mt-8">
+                  <CtaButton onClick={scrollToForm} className="px-10 sm:px-14 py-5 text-base glow-green-strong">
+                    Quero Mudar a Perspectiva
+                  </CtaButton>
+                </motion.div>
+
+                {/* Date + Location — V4: Montserrat 500 16px */}
+                <motion.p variants={fadeUp} className="mt-6 font-body font-medium text-white/60 text-base flex items-center gap-3">
+                  <Calendar className="w-4 h-4 text-primary" /> 09 de Abril
+                  <span className="text-white/20">|</span>
+                  <MapPin className="w-4 h-4 text-primary" /> São Paulo, SP
+                </motion.p>
+              </motion.div>
+            </div>
+
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />
           </section>
 
-          {/* ── COUNTDOWN BAR ── */}
-          <section className="py-10 relative">
-            <div className="max-w-4xl mx-auto px-6">
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                className="rounded-2xl border border-primary/20 bg-card/80 backdrop-blur-sm p-6 sm:p-8"
-              >
-                <p className="text-center text-xs font-display uppercase tracking-[0.25em] text-foreground/40 mb-5">
-                  O evento começa em
-                </p>
-                <div className="flex justify-center gap-3 sm:gap-5">
-                  {[
-                    { v: countdown.days, l: "Dias" },
-                    { v: countdown.hours, l: "Horas" },
-                    { v: countdown.minutes, l: "Min" },
-                    { v: countdown.seconds, l: "Seg" },
-                  ].map((u, i) => (
-                    <div key={i} className="flex flex-col items-center">
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-background border border-border flex items-center justify-center">
-                        <span className="font-display text-2xl sm:text-3xl font-bold text-primary tabular-nums">
-                          {String(u.v).padStart(2, "0")}
-                        </span>
-                      </div>
-                      <span className="text-[10px] text-foreground/35 mt-2 uppercase tracking-widest font-medium">{u.l}</span>
+          {/* ══ X-SHAPED MARQUEE BANDS ══ */}
+          <div className="relative -mt-4 py-1 overflow-hidden">
+            <div className="-rotate-[1.5deg] -ml-[5%] w-[110%] bg-white/[0.03] border-y border-white/5">
+              <MarqueeBand />
+            </div>
+            <div className="rotate-[1.5deg] -ml-[5%] w-[110%] -mt-1 bg-primary/[0.05] border-y border-primary/10">
+              <MarqueeBand reverse />
+            </div>
+          </div>
+
+          {/* ══ STATS — V4: 4 dark cards with red icon, big number, label ══ */}
+          <section className="py-16 sm:py-20">
+            <div className="max-w-5xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} className="text-center mb-12">
+                <motion.div variants={fadeUp}>
+                  <SectionLabel text="O maior evento de novo comércio" />
+                  <SectionHeading>
+                    O <span className="text-primary">MAIOR EVENTO DE ESTRATÉGIA</span>
+                    <br />PARA EMPRESÁRIOS DO BRASIL
+                  </SectionHeading>
+                  <p className="font-body font-medium text-white/50 text-lg mt-4 max-w-xl mx-auto">
+                    Onde os empresários que comandam o mercado vêm buscar <span className="text-white font-semibold">clareza para os próximos 10 anos.</span>
+                  </p>
+                </motion.div>
+              </motion.div>
+
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {stats.map((s, i) => (
+                  <motion.div key={i} variants={scaleIn} className="relative rounded-2xl bg-[#1A1A1A] border border-white/5 p-5 sm:p-6 text-center overflow-hidden group hover:border-primary/20 transition-colors">
+                    {/* Red top bar — V4 style */}
+                    <div className="absolute top-0 left-4 right-4 h-[3px] bg-primary rounded-b" />
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mt-2">
+                      <s.icon className="w-5 h-5 text-primary" />
                     </div>
-                  ))}
-                </div>
+                    <p className="font-display text-2xl sm:text-3xl text-primary mt-4">{s.value}</p>
+                    <p className="font-display text-xs sm:text-sm text-white mt-1">{s.label}</p>
+                    <p className="font-body text-[11px] sm:text-xs text-white/40 mt-2 leading-snug">{s.desc}</p>
+                  </motion.div>
+                ))}
               </motion.div>
             </div>
           </section>
 
-          {/* ── FORM SECTION ── */}
-          <section id="formulario" className="py-16 sm:py-24 relative">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
-            <div className="max-w-xl mx-auto px-6 relative z-10">
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-60px" }}
-                variants={stagger}
-              >
+          {/* ══ O DILEMA — V4 style ══ */}
+          <section className="py-16 sm:py-20 bg-white/[0.02]">
+            <div className="max-w-4xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
                 <motion.div variants={fadeUp} className="text-center mb-10">
-                  <span className="text-primary font-display text-[11px] uppercase tracking-[0.3em] font-semibold">
-                    Cadastro Gratuito
-                  </span>
-                  <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mt-3 leading-tight">
-                    Garanta sua vaga e receba
-                    <br />
-                    <span className="text-primary">informações exclusivas</span>
-                  </h2>
-                  <p className="text-muted-foreground text-sm mt-3 max-w-md mx-auto">
-                    Preencha o formulário abaixo com suas informações. Leva menos de 2 minutos.
-                  </p>
+                  <SectionLabel text="O Dilema" />
+                  <SectionHeading>
+                    TODO EMPRESÁRIO ENFRENTA <span className="text-primary">O MESMO DILEMA</span>
+                  </SectionHeading>
                 </motion.div>
 
-                <motion.form
-                  variants={fadeUp}
-                  onSubmit={handleSubmit}
-                  className="bg-card/70 backdrop-blur-sm border border-border rounded-2xl p-6 sm:p-8 space-y-5 shadow-xl shadow-primary/[0.03]"
-                >
-                  {/* Progress bar */}
+                <motion.div variants={fadeUp} className="grid sm:grid-cols-2 gap-5">
+                  <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-6 relative overflow-hidden">
+                    <div className="absolute top-0 left-4 right-4 h-[3px] bg-red-500/80 rounded-b" />
+                    <p className="font-body font-bold text-red-400/80 text-xs uppercase tracking-wider mt-2 mb-3">O curto prazo sufoca</p>
+                    <p className="font-body text-white/50 text-[15px] leading-relaxed">
+                      Contas, clientes, crises, urgências. Você vive resolvendo o HOJE... <span className="text-white font-medium">mas o AMANHÃ nunca chega.</span>
+                    </p>
+                    <p className="font-body text-white/35 text-[15px] mt-3 leading-relaxed">
+                      Quando olha pra trás, percebe: mais um ano passou e <span className="text-red-400/70 font-medium">você continua no mesmo lugar.</span>
+                    </p>
+                  </div>
+                  <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-6 relative overflow-hidden">
+                    <div className="absolute top-0 left-4 right-4 h-[3px] bg-primary rounded-b" />
+                    <p className="font-body font-bold text-primary text-xs uppercase tracking-wider mt-2 mb-3">A solução existe</p>
+                    <p className="font-body text-white/50 text-[15px] leading-relaxed">
+                      O problema não é falta de trabalho. <span className="text-white font-medium">É falta de um trajeto claro.</span>
+                    </p>
+                    <p className="font-body text-white/35 text-[15px] mt-3 leading-relaxed">
+                      A rotina que te obriga a sobreviver ao mês e nunca <span className="text-primary font-medium">construir os próximos 10 anos.</span>
+                    </p>
+                  </div>
+                </motion.div>
+
+                <motion.div variants={fadeUp} className="text-center mt-10">
+                  <CtaButton onClick={scrollToForm}>Quero Mudar a Perspectiva</CtaButton>
+                </motion.div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ SPEAKERS — V4 style: 3+2 grid, dark cards, photo, red accent ══ */}
+          <section className="py-16 sm:py-20">
+            <div className="max-w-6xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} className="text-center mb-12">
+                <motion.div variants={fadeUp}>
+                  <SectionLabel text="Aprenda com grandes" />
+                  <SectionHeading>
+                    E QUEM ESTÁ NO PALCO DO <span className="text-primary">FÓRUM NOVO COMÉRCIO?</span>
+                  </SectionHeading>
+                  <p className="font-body font-medium text-white/50 text-lg mt-4 max-w-lg mx-auto">
+                    Autoridades que <span className="text-white font-semibold">construíram impérios</span> onde outros viam apenas caos.
+                  </p>
+                </motion.div>
+              </motion.div>
+
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} variants={stagger}>
+                {/* Top row: 3 cards */}
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                  {speakers.slice(0, 3).map((s, i) => (
+                    <motion.div key={i} variants={scaleIn} className="group relative rounded-2xl overflow-hidden bg-[#1A1A1A] border border-white/5 hover:border-primary/20 transition-all duration-500">
+                      <div className="absolute top-0 left-4 right-4 h-[3px] bg-primary rounded-b z-20" />
+                      <div className="relative h-52 overflow-hidden">
+                        {s.image ? (
+                          <img src={s.image} alt={s.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-transparent">
+                            <span className="font-display text-5xl text-primary/15">{s.name.split(" ").map(n => n[0]).join("")}</span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent" />
+                        <a href={s.instagram} target="_blank" rel="noopener noreferrer" className="absolute top-3 right-3 w-8 h-8 rounded bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-primary/20 hover:border-primary/40 transition-all z-10">
+                          <Instagram className="w-3.5 h-3.5 text-white/60" />
+                        </a>
+                      </div>
+                      <div className="p-5 -mt-6 relative z-10">
+                        <h3 className="font-display text-base text-white leading-tight">{s.name}</h3>
+                        <p className="text-primary font-body font-semibold text-xs mt-1">{s.role}</p>
+                        <p className="text-white/35 font-body text-xs mt-2 leading-relaxed">{s.bio}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+                {/* Bottom row: 2 cards centered */}
+                <div className="grid sm:grid-cols-2 gap-4 max-w-[calc(66.666%+0.5rem)] lg:max-w-[calc(66.666%+0.5rem)] mx-auto">
+                  {speakers.slice(3).map((s, i) => (
+                    <motion.div key={i} variants={scaleIn} className="group relative rounded-2xl overflow-hidden bg-[#1A1A1A] border border-white/5 hover:border-primary/20 transition-all duration-500">
+                      <div className="absolute top-0 left-4 right-4 h-[3px] bg-primary rounded-b z-20" />
+                      <div className="relative h-52 overflow-hidden">
+                        {s.image ? (
+                          <img src={s.image} alt={s.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-transparent">
+                            <span className="font-display text-5xl text-primary/15">{s.name.split(" ").map(n => n[0]).join("")}</span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent" />
+                        <a href={s.instagram} target="_blank" rel="noopener noreferrer" className="absolute top-3 right-3 w-8 h-8 rounded bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-primary/20 hover:border-primary/40 transition-all z-10">
+                          <Instagram className="w-3.5 h-3.5 text-white/60" />
+                        </a>
+                      </div>
+                      <div className="p-5 -mt-6 relative z-10">
+                        <h3 className="font-display text-base text-white leading-tight">{s.name}</h3>
+                        <p className="text-primary font-body font-semibold text-xs mt-1">{s.role}</p>
+                        <p className="text-white/35 font-body text-xs mt-2 leading-relaxed">{s.bio}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mt-12">
+                <CtaButton onClick={scrollToForm}>Quero Estar Nesse Evento</CtaButton>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ WHAT YOU'LL LEARN — V4 style numbered cards ══ */}
+          <section className="py-16 sm:py-20 bg-white/[0.02]">
+            <div className="max-w-5xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} className="text-center mb-12">
+                <motion.div variants={fadeUp}>
+                  <SectionLabel text="O que você vai aprender" />
+                  <SectionHeading>
+                    ISSO É MAIS DO QUE UM EVENTO.{" "}
+                    <span className="text-primary">É O ANTÍDOTO PARA O IMEDIATISMO.</span>
+                  </SectionHeading>
+                  <p className="font-body font-medium text-white/50 text-lg mt-4 max-w-lg mx-auto">
+                    Você não vai aprender tática. Vai aprender <span className="text-white font-semibold">arquitetura.</span>
+                  </p>
+                </motion.div>
+              </motion.div>
+
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} variants={stagger} className="space-y-4">
+                {learnings.map((item, i) => (
+                  <motion.div key={i} variants={fadeUp} className="rounded-2xl bg-[#1A1A1A] border border-white/5 overflow-hidden hover:border-primary/20 transition-colors">
+                    <div className="h-[3px] bg-gradient-to-r from-primary via-primary/50 to-transparent" />
+                    <div className="flex flex-col sm:flex-row gap-5 p-5 sm:p-6">
+                      <div className="flex sm:flex-col items-center sm:items-start gap-3 flex-shrink-0">
+                        <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                          <item.icon className="w-5 h-5 text-primary" />
+                        </div>
+                        <span className="font-display text-3xl text-primary/15">{item.number}</span>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-display text-base sm:text-lg text-white leading-tight">{item.title}</h3>
+                        <p className="text-primary font-body font-semibold text-xs mt-1 uppercase tracking-wider">{item.subtitle}</p>
+                        <p className="text-white/40 font-body text-sm mt-3 leading-relaxed">{item.desc}</p>
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {item.bullets.map((b, j) => (
+                            <span key={j} className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-primary/5 border border-primary/10 text-xs text-primary/80 font-body font-medium">
+                              <CheckCircle2 className="w-3 h-3" /> {b}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mt-12">
+                <CtaButton onClick={scrollToForm}>Quero Aprender Tudo Isso</CtaButton>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ MARQUEE ══ */}
+          <div className="relative py-1 overflow-hidden">
+            <div className="-rotate-[1.5deg] -ml-[5%] w-[110%] bg-white/[0.03] border-y border-white/5">
+              <MarqueeBand />
+            </div>
+            <div className="rotate-[1.5deg] -ml-[5%] w-[110%] -mt-1 bg-primary/[0.05] border-y border-primary/10">
+              <MarqueeBand reverse />
+            </div>
+          </div>
+
+          {/* ══ FAQ — V4 style ══ */}
+          <section className="py-16 sm:py-20">
+            <div className="max-w-2xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
+                <motion.div variants={fadeUp} className="text-center mb-10">
+                  <SectionLabel text="FAQ" />
+                  <SectionHeading>PERGUNTAS FREQUENTES</SectionHeading>
+                </motion.div>
+                <motion.div variants={stagger} className="space-y-3">
+                  {faqs.map((faq, i) => (
+                    <FaqItem key={i} item={faq} isOpen={openFaq === i} toggle={() => setOpenFaq(openFaq === i ? null : i)} />
+                  ))}
+                </motion.div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ FORM ══ */}
+          <section id="formulario" className="py-16 sm:py-20 bg-white/[0.02]">
+            <div className="max-w-xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
+                <motion.div variants={fadeUp} className="text-center mb-10">
+                  <SectionLabel text="Cadastro Gratuito" />
+                  <SectionHeading>
+                    Garanta sua vaga e receba <span className="text-primary">informações exclusivas</span>
+                  </SectionHeading>
+                  <p className="font-body font-medium text-white/50 text-base mt-3 max-w-md mx-auto">Preencha o formulário abaixo. Leva menos de 2 minutos.</p>
+                </motion.div>
+
+                <motion.form variants={fadeUp} onSubmit={handleSubmit} className="bg-[#1A1A1A] border border-white/5 rounded-2xl p-6 sm:p-8 space-y-5">
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-[11px] text-foreground/40 font-medium">Progresso</span>
-                      <span className="text-[11px] text-primary font-display font-semibold">{progress}%</span>
+                      <span className="text-[11px] text-white/40 font-body font-medium">Progresso</span>
+                      <span className="text-[11px] text-primary font-body font-bold">{progress}%</span>
                     </div>
-                    <div className="h-1 bg-border rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full bg-primary rounded-full"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${progress}%` }}
-                        transition={{ duration: 0.4, ease: "easeOut" }}
-                      />
+                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                      <motion.div className="h-full bg-primary rounded-full" initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
                     </div>
                   </div>
 
-                  {/* Contact fields */}
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5 sm:col-span-2">
-                      <Label htmlFor="nome" className="text-xs font-medium text-foreground/70">
-                        Nome completo
-                      </Label>
-                      <Input
-                        id="nome"
-                        placeholder="Seu nome completo"
-                        value={formData.nome || ""}
-                        onChange={(e) => handleChange("nome", e.target.value)}
-                        className={`h-11 bg-background/50 ${errors.nome ? "border-destructive" : "border-border/70"}`}
-                      />
-                      {errors.nome && <p className="text-[11px] text-destructive">{errors.nome}</p>}
+                      <Label htmlFor="nome" className="text-xs font-body font-medium text-white/60">Nome completo</Label>
+                      <Input id="nome" placeholder="Seu nome completo" value={formData.nome || ""} onChange={(e) => handleChange("nome", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.nome ? "border-red-500" : ""}`} />
+                      {errors.nome && <p className="text-[11px] text-red-400">{errors.nome}</p>}
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="email" className="text-xs font-medium text-foreground/70">
-                        E-mail
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="seu@email.com"
-                        value={formData.email || ""}
-                        onChange={(e) => handleChange("email", e.target.value)}
-                        className={`h-11 bg-background/50 ${errors.email ? "border-destructive" : "border-border/70"}`}
-                      />
-                      {errors.email && <p className="text-[11px] text-destructive">{errors.email}</p>}
+                      <Label htmlFor="email" className="text-xs font-body font-medium text-white/60">E-mail</Label>
+                      <Input id="email" type="email" placeholder="seu@email.com" value={formData.email || ""} onChange={(e) => handleChange("email", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.email ? "border-red-500" : ""}`} />
+                      {errors.email && <p className="text-[11px] text-red-400">{errors.email}</p>}
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="telefone" className="text-xs font-medium text-foreground/70">
-                        WhatsApp
-                      </Label>
-                      <Input
-                        id="telefone"
-                        type="tel"
-                        placeholder="(11) 99999-9999"
-                        value={formData.telefone || ""}
-                        onChange={(e) => handleChange("telefone", e.target.value)}
-                        className={`h-11 bg-background/50 ${errors.telefone ? "border-destructive" : "border-border/70"}`}
-                      />
-                      {errors.telefone && <p className="text-[11px] text-destructive">{errors.telefone}</p>}
+                      <Label htmlFor="telefone" className="text-xs font-body font-medium text-white/60">WhatsApp</Label>
+                      <Input id="telefone" type="tel" placeholder="(11) 99999-9999" value={formData.telefone || ""} onChange={(e) => handleChange("telefone", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.telefone ? "border-red-500" : ""}`} />
+                      {errors.telefone && <p className="text-[11px] text-red-400">{errors.telefone}</p>}
                     </div>
                   </div>
 
-                  {/* Divider */}
                   <div className="flex items-center gap-3 pt-1">
-                    <div className="flex-1 h-px bg-border" />
-                    <span className="text-[10px] text-primary font-display uppercase tracking-[0.2em] font-semibold whitespace-nowrap">
-                      Sobre seu negócio
-                    </span>
-                    <div className="flex-1 h-px bg-border" />
+                    <div className="flex-1 h-px bg-white/10" />
+                    <span className="text-[10px] text-primary font-body font-bold uppercase tracking-[0.2em] whitespace-nowrap">Sobre seu negócio</span>
+                    <div className="flex-1 h-px bg-white/10" />
                   </div>
 
-                  {/* Dropdown Questions */}
                   {questions.map((q) => (
                     <div key={q.name} className="space-y-1.5">
-                      <Label className="text-xs font-medium text-foreground/70">{q.label}</Label>
-                      <Select
-                        value={formData[q.name] || ""}
-                        onValueChange={(val) => handleChange(q.name, val)}
-                      >
-                        <SelectTrigger className={`h-11 bg-background/50 ${errors[q.name] ? "border-destructive" : "border-border/70"}`}>
+                      <Label className="text-xs font-body font-medium text-white/60">{q.label}</Label>
+                      <Select value={formData[q.name] || ""} onValueChange={(val) => handleChange(q.name, val)}>
+                        <SelectTrigger className={`h-11 bg-black/30 border-white/10 text-white ${errors[q.name] ? "border-red-500" : ""}`}>
                           <SelectValue placeholder="Selecione uma opção" />
                         </SelectTrigger>
                         <SelectContent>
-                          {q.options.map((opt) => (
-                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                          ))}
+                          {q.options.map((opt) => (<SelectItem key={opt} value={opt}>{opt}</SelectItem>))}
                         </SelectContent>
                       </Select>
-                      {errors[q.name] && <p className="text-[11px] text-destructive">{errors[q.name]}</p>}
+                      {errors[q.name] && <p className="text-[11px] text-red-400">{errors[q.name]}</p>}
                     </div>
                   ))}
 
-                  {errors.form && (
-                    <p className="text-sm text-destructive text-center">{errors.form}</p>
-                  )}
+                  {errors.form && <p className="text-sm text-red-400 text-center font-body">{errors.form}</p>}
 
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-bold text-sm uppercase tracking-wider py-6 glow-green transition-all duration-300 hover:shadow-lg hover:shadow-primary/20"
-                  >
-                    {isSubmitting ? (
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    ) : (
-                      <Send className="w-4 h-4 mr-2" />
-                    )}
+                  <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-emerald-600 via-primary to-emerald-400 text-black font-body font-bold text-sm uppercase tracking-wider py-4 rounded hover:brightness-110 transition-all flex items-center justify-center gap-2 glow-green">
+                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                     {isSubmitting ? "Enviando..." : "Garantir Minha Vaga"}
-                  </Button>
+                  </button>
 
-                  {/* Trust badges */}
                   <div className="flex items-center justify-center gap-4 pt-2">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] text-foreground/35">
-                      <Shield className="w-3 h-3" />
-                      Dados protegidos
-                    </span>
-                    <span className="w-px h-3 bg-border" />
-                    <span className="inline-flex items-center gap-1.5 text-[11px] text-foreground/35">
-                      <CheckCircle2 className="w-3 h-3" />
-                      100% gratuito
-                    </span>
+                    <span className="inline-flex items-center gap-1.5 text-[11px] text-white/30 font-body"><Shield className="w-3 h-3" /> Dados protegidos</span>
+                    <span className="w-px h-3 bg-white/10" />
+                    <span className="inline-flex items-center gap-1.5 text-[11px] text-white/30 font-body"><CheckCircle2 className="w-3 h-3" /> 100% gratuito</span>
                   </div>
                 </motion.form>
               </motion.div>
             </div>
           </section>
 
-          {/* ── FOOTER ── */}
-          <footer className="py-8 border-t border-border/30">
+          {/* ══ FOOTER ══ */}
+          <footer className="py-8 border-t border-white/5">
             <div className="max-w-6xl mx-auto px-6 text-center">
-              <p className="text-xs text-foreground/25 font-display">
-                © 2026 Fórum Novo Comércio. Todos os direitos reservados.
-              </p>
+              <p className="text-xs text-white/20 font-body">© 2026 Fórum Novo Comércio. Todos os direitos reservados.</p>
             </div>
           </footer>
         </motion.div>
