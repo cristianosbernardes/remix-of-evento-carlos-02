@@ -14,7 +14,8 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import carlosSpeaker from "@/assets/carlos-speaker.webp";
-import carlosHero from "@/assets/carlos-hero.webp";
+// Hero image will be added later
+// import carlosHero from "@/assets/carlos-hero.webp";
 
 /* ═══════════════════════════════════════════
    DATA
@@ -23,9 +24,9 @@ import carlosHero from "@/assets/carlos-hero.webp";
 const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzLoNJYoomxlHgKhn-9LgXK2t4hcDkuUK5p4Gps9Mof7gDNtpZ2n-_KzrRvDgar350V/exec";
 
 const formSchema = z.object({
-  nome: z.string().trim().min(2, "Nome é obrigatório").max(100),
-  email: z.string().trim().email("E-mail inválido").max(255),
-  telefone: z.string().trim().min(10, "Telefone inválido").max(20),
+  nome: z.string().trim().min(2, "Preencha seu nome completo").max(100),
+  email: z.string().trim().min(1, "Preencha seu e-mail").email("Digite um e-mail válido (ex: nome@email.com)").max(255),
+  telefone: z.string().trim().min(14, "Digite um telefone válido com DDD").max(20),
   vendeInternet: z.string().min(1, "Selecione uma opção"),
   canalVenda: z.string().min(1, "Selecione uma opção"),
   regimeTributario: z.string().min(1, "Selecione uma opção"),
@@ -133,6 +134,31 @@ const CtaButton = ({ children, onClick, className = "" }: { children: React.Reac
   </button>
 );
 
+/* Speaker card */
+const SpeakerCard = ({ speaker: s }: { speaker: typeof speakers[0] }) => (
+  <motion.div variants={scaleIn} className="group relative rounded-2xl overflow-hidden bg-[#1A1A1A] border border-white/5 hover:border-primary/20 transition-all duration-500 h-full">
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-primary rounded-b z-20" />
+    <div className="relative h-52 overflow-hidden">
+      {s.image ? (
+        <img src={s.image} alt={s.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-transparent">
+          <span className="font-display text-5xl text-primary/15">{s.name.split(" ").map(n => n[0]).join("")}</span>
+        </div>
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent" />
+      <a href={s.instagram} target="_blank" rel="noopener noreferrer" className="absolute top-3 right-3 w-8 h-8 rounded bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-primary/20 hover:border-primary/40 transition-all z-10">
+        <Instagram className="w-3.5 h-3.5 text-white/60" />
+      </a>
+    </div>
+    <div className="p-5 -mt-6 relative z-10">
+      <h3 className="font-display text-base text-white leading-tight">{s.name}</h3>
+      <p className="text-primary font-body font-semibold text-xs mt-1">{s.role}</p>
+      <p className="text-white/35 font-body text-xs mt-2 leading-relaxed">{s.bio}</p>
+    </div>
+  </motion.div>
+);
+
 /* X-shaped marquee bands */
 const MarqueeBand = ({ reverse = false }: { reverse?: boolean }) => (
   <div className="relative overflow-hidden py-3">
@@ -180,7 +206,20 @@ const Index = () => {
   const countdown = useCountdown();
   const navigate = useNavigate();
 
+  const maskPhone = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 11);
+    if (digits.length <= 2) return digits.length ? `(${digits}` : "";
+    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  };
+
   const handleChange = (field: keyof FormData, value: string) => {
+    if (field === "telefone") {
+      // Block non-numeric input and apply mask
+      const onlyDigits = value.replace(/\D/g, "");
+      if (value !== "" && onlyDigits === "" && value !== "(") return; // typed only letters
+      value = maskPhone(value);
+    }
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors((prev) => { const n = { ...prev }; delete n[field]; return n; });
   };
@@ -269,12 +308,9 @@ const Index = () => {
 
           {/* ══ HERO — V4 style: full-bleed image, centered text overlay ══ */}
           <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-14">
-            {/* Background image */}
-            <div className="absolute inset-0">
-              <img src={carlosHero} alt="" className="w-full h-full object-cover object-top opacity-30 scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-background" />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/60" />
-            </div>
+            {/* Background — placeholder until hero image is added */}
+            <div className="absolute inset-0 bg-background" />
+            <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] via-transparent to-background" />
 
             {/* Content */}
             <div className="relative z-10 text-center px-6 max-w-4xl mx-auto flex flex-col items-center">
@@ -319,10 +355,10 @@ const Index = () => {
 
           {/* ══ X-SHAPED MARQUEE BANDS ══ */}
           <div className="relative -mt-4 py-1 overflow-hidden">
-            <div className="-rotate-[1.5deg] -ml-[5%] w-[110%] bg-white/[0.03] border-y border-white/5">
+            <div className="relative z-10 -rotate-[1.5deg] -ml-[10%] w-[120%] bg-[#0F0F0F] border-y border-white/10">
               <MarqueeBand />
             </div>
-            <div className="rotate-[1.5deg] -ml-[5%] w-[110%] -mt-1 bg-primary/[0.05] border-y border-primary/10">
+            <div className="relative z-20 rotate-[1.5deg] -ml-[10%] w-[120%] -mt-2 bg-[#141414] border-y border-primary/15">
               <MarqueeBand reverse />
             </div>
           </div>
@@ -347,7 +383,7 @@ const Index = () => {
                 {stats.map((s, i) => (
                   <motion.div key={i} variants={scaleIn} className="relative rounded-2xl bg-[#1A1A1A] border border-white/5 p-5 sm:p-6 text-center overflow-hidden group hover:border-primary/20 transition-colors">
                     {/* Red top bar — V4 style */}
-                    <div className="absolute top-0 left-4 right-4 h-[3px] bg-primary rounded-b" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-primary rounded-b" />
                     <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mt-2">
                       <s.icon className="w-5 h-5 text-primary" />
                     </div>
@@ -373,7 +409,7 @@ const Index = () => {
 
                 <motion.div variants={fadeUp} className="grid sm:grid-cols-2 gap-5">
                   <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-6 relative overflow-hidden">
-                    <div className="absolute top-0 left-4 right-4 h-[3px] bg-red-500/80 rounded-b" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-red-500/80 rounded-b" />
                     <p className="font-body font-bold text-red-400/80 text-xs uppercase tracking-wider mt-2 mb-3">O curto prazo sufoca</p>
                     <p className="font-body text-white/50 text-[15px] leading-relaxed">
                       Contas, clientes, crises, urgências. Você vive resolvendo o HOJE... <span className="text-white font-medium">mas o AMANHÃ nunca chega.</span>
@@ -383,7 +419,7 @@ const Index = () => {
                     </p>
                   </div>
                   <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-6 relative overflow-hidden">
-                    <div className="absolute top-0 left-4 right-4 h-[3px] bg-primary rounded-b" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-primary rounded-b" />
                     <p className="font-body font-bold text-primary text-xs uppercase tracking-wider mt-2 mb-3">A solução existe</p>
                     <p className="font-body text-white/50 text-[15px] leading-relaxed">
                       O problema não é falta de trabalho. <span className="text-white font-medium">É falta de um trajeto claro.</span>
@@ -418,55 +454,17 @@ const Index = () => {
 
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} variants={stagger}>
                 {/* Top row: 3 cards */}
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                   {speakers.slice(0, 3).map((s, i) => (
-                    <motion.div key={i} variants={scaleIn} className="group relative rounded-2xl overflow-hidden bg-[#1A1A1A] border border-white/5 hover:border-primary/20 transition-all duration-500">
-                      <div className="absolute top-0 left-4 right-4 h-[3px] bg-primary rounded-b z-20" />
-                      <div className="relative h-52 overflow-hidden">
-                        {s.image ? (
-                          <img src={s.image} alt={s.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-transparent">
-                            <span className="font-display text-5xl text-primary/15">{s.name.split(" ").map(n => n[0]).join("")}</span>
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent" />
-                        <a href={s.instagram} target="_blank" rel="noopener noreferrer" className="absolute top-3 right-3 w-8 h-8 rounded bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-primary/20 hover:border-primary/40 transition-all z-10">
-                          <Instagram className="w-3.5 h-3.5 text-white/60" />
-                        </a>
-                      </div>
-                      <div className="p-5 -mt-6 relative z-10">
-                        <h3 className="font-display text-base text-white leading-tight">{s.name}</h3>
-                        <p className="text-primary font-body font-semibold text-xs mt-1">{s.role}</p>
-                        <p className="text-white/35 font-body text-xs mt-2 leading-relaxed">{s.bio}</p>
-                      </div>
-                    </motion.div>
+                    <SpeakerCard key={i} speaker={s} />
                   ))}
                 </div>
-                {/* Bottom row: 2 cards centered */}
-                <div className="grid sm:grid-cols-2 gap-4 max-w-[calc(66.666%+0.5rem)] lg:max-w-[calc(66.666%+0.5rem)] mx-auto">
+                {/* Bottom row: 2 cards centered — same width as top cards */}
+                <div className="flex justify-center gap-4">
                   {speakers.slice(3).map((s, i) => (
-                    <motion.div key={i} variants={scaleIn} className="group relative rounded-2xl overflow-hidden bg-[#1A1A1A] border border-white/5 hover:border-primary/20 transition-all duration-500">
-                      <div className="absolute top-0 left-4 right-4 h-[3px] bg-primary rounded-b z-20" />
-                      <div className="relative h-52 overflow-hidden">
-                        {s.image ? (
-                          <img src={s.image} alt={s.name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-transparent">
-                            <span className="font-display text-5xl text-primary/15">{s.name.split(" ").map(n => n[0]).join("")}</span>
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent" />
-                        <a href={s.instagram} target="_blank" rel="noopener noreferrer" className="absolute top-3 right-3 w-8 h-8 rounded bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-primary/20 hover:border-primary/40 transition-all z-10">
-                          <Instagram className="w-3.5 h-3.5 text-white/60" />
-                        </a>
-                      </div>
-                      <div className="p-5 -mt-6 relative z-10">
-                        <h3 className="font-display text-base text-white leading-tight">{s.name}</h3>
-                        <p className="text-primary font-body font-semibold text-xs mt-1">{s.role}</p>
-                        <p className="text-white/35 font-body text-xs mt-2 leading-relaxed">{s.bio}</p>
-                      </div>
-                    </motion.div>
+                    <div key={i} className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.666rem)]">
+                      <SpeakerCard speaker={s} />
+                    </div>
                   ))}
                 </div>
               </motion.div>
@@ -510,8 +508,8 @@ const Index = () => {
                         <p className="text-white/40 font-body text-sm mt-3 leading-relaxed">{item.desc}</p>
                         <div className="flex flex-wrap gap-2 mt-4">
                           {item.bullets.map((b, j) => (
-                            <span key={j} className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-primary/5 border border-primary/10 text-xs text-primary/80 font-body font-medium">
-                              <CheckCircle2 className="w-3 h-3" /> {b}
+                            <span key={j} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.03] border border-white/[0.06] text-[11px] text-white/35 font-body font-medium">
+                              <CheckCircle2 className="w-3 h-3 text-primary/40" /> {b}
                             </span>
                           ))}
                         </div>
@@ -529,10 +527,10 @@ const Index = () => {
 
           {/* ══ MARQUEE ══ */}
           <div className="relative py-1 overflow-hidden">
-            <div className="-rotate-[1.5deg] -ml-[5%] w-[110%] bg-white/[0.03] border-y border-white/5">
+            <div className="relative z-10 -rotate-[1.5deg] -ml-[10%] w-[120%] bg-[#0F0F0F] border-y border-white/10">
               <MarqueeBand />
             </div>
-            <div className="rotate-[1.5deg] -ml-[5%] w-[110%] -mt-1 bg-primary/[0.05] border-y border-primary/10">
+            <div className="relative z-20 rotate-[1.5deg] -ml-[10%] w-[120%] -mt-2 bg-[#141414] border-y border-primary/15">
               <MarqueeBand reverse />
             </div>
           </div>
@@ -580,18 +578,18 @@ const Index = () => {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5 sm:col-span-2">
                       <Label htmlFor="nome" className="text-xs font-body font-medium text-white/60">Nome completo</Label>
-                      <Input id="nome" placeholder="Seu nome completo" value={formData.nome || ""} onChange={(e) => handleChange("nome", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.nome ? "border-red-500" : ""}`} />
-                      {errors.nome && <p className="text-[11px] text-red-400">{errors.nome}</p>}
+                      <Input id="nome" placeholder="Seu nome completo" value={formData.nome || ""} onChange={(e) => handleChange("nome", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.nome ? "border-yellow-500" : ""}`} />
+                      {errors.nome && <p className="text-[11px] text-yellow-400">{errors.nome}</p>}
                     </div>
                     <div className="space-y-1.5">
                       <Label htmlFor="email" className="text-xs font-body font-medium text-white/60">E-mail</Label>
-                      <Input id="email" type="email" placeholder="seu@email.com" value={formData.email || ""} onChange={(e) => handleChange("email", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.email ? "border-red-500" : ""}`} />
-                      {errors.email && <p className="text-[11px] text-red-400">{errors.email}</p>}
+                      <Input id="email" type="email" placeholder="seu@email.com" value={formData.email || ""} onChange={(e) => handleChange("email", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.email ? "border-yellow-500" : ""}`} />
+                      {errors.email && <p className="text-[11px] text-yellow-400">{errors.email}</p>}
                     </div>
                     <div className="space-y-1.5">
                       <Label htmlFor="telefone" className="text-xs font-body font-medium text-white/60">WhatsApp</Label>
-                      <Input id="telefone" type="tel" placeholder="(11) 99999-9999" value={formData.telefone || ""} onChange={(e) => handleChange("telefone", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.telefone ? "border-red-500" : ""}`} />
-                      {errors.telefone && <p className="text-[11px] text-red-400">{errors.telefone}</p>}
+                      <Input id="telefone" type="text" inputMode="numeric" placeholder="(11) 99999-9999" value={formData.telefone || ""} onChange={(e) => handleChange("telefone", e.target.value)} className={`h-11 bg-black/30 border-white/10 text-white placeholder:text-white/25 ${errors.telefone ? "border-yellow-500" : ""}`} />
+                      {errors.telefone && <p className="text-[11px] text-yellow-400">{errors.telefone}</p>}
                     </div>
                   </div>
 
@@ -605,28 +603,26 @@ const Index = () => {
                     <div key={q.name} className="space-y-1.5">
                       <Label className="text-xs font-body font-medium text-white/60">{q.label}</Label>
                       <Select value={formData[q.name] || ""} onValueChange={(val) => handleChange(q.name, val)}>
-                        <SelectTrigger className={`h-11 bg-black/30 border-white/10 text-white ${errors[q.name] ? "border-red-500" : ""}`}>
+                        <SelectTrigger className={`h-11 bg-black/30 border-white/10 text-white ${errors[q.name] ? "border-yellow-500" : ""}`}>
                           <SelectValue placeholder="Selecione uma opção" />
                         </SelectTrigger>
                         <SelectContent>
                           {q.options.map((opt) => (<SelectItem key={opt} value={opt}>{opt}</SelectItem>))}
                         </SelectContent>
                       </Select>
-                      {errors[q.name] && <p className="text-[11px] text-red-400">{errors[q.name]}</p>}
+                      {errors[q.name] && <p className="text-[11px] text-yellow-400">{errors[q.name]}</p>}
                     </div>
                   ))}
 
-                  {errors.form && <p className="text-sm text-red-400 text-center font-body">{errors.form}</p>}
+                  {errors.form && <p className="text-sm text-yellow-400 text-center font-body">{errors.form}</p>}
 
                   <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-emerald-600 via-primary to-emerald-400 text-black font-body font-bold text-sm uppercase tracking-wider py-4 rounded hover:brightness-110 transition-all flex items-center justify-center gap-2 glow-green">
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                     {isSubmitting ? "Enviando..." : "Garantir Minha Vaga"}
                   </button>
 
-                  <div className="flex items-center justify-center gap-4 pt-2">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] text-white/30 font-body"><Shield className="w-3 h-3" /> Dados protegidos</span>
-                    <span className="w-px h-3 bg-white/10" />
-                    <span className="inline-flex items-center gap-1.5 text-[11px] text-white/30 font-body"><CheckCircle2 className="w-3 h-3" /> 100% gratuito</span>
+                  <div className="flex items-center justify-center pt-2">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] text-white/30 font-body"><Shield className="w-3 h-3" /> Seus dados estão protegidos</span>
                   </div>
                 </motion.form>
               </motion.div>
