@@ -121,17 +121,39 @@
   }
 
   .bg-grid {
-    background-image: 
+    background-image:
       linear-gradient(hsl(155 80% 45% / 0.03) 1px, transparent 1px),
       linear-gradient(90deg, hsl(155 80% 45% / 0.03) 1px, transparent 1px);
     background-size: 60px 60px;
   }
 
   .bg-grid-dense {
-    background-image: 
+    background-image:
       linear-gradient(hsl(155 80% 45% / 0.05) 1px, transparent 1px),
       linear-gradient(90deg, hsl(155 80% 45% / 0.05) 1px, transparent 1px);
     background-size: 30px 30px;
+  }
+
+  /* V4-style grid pattern that fades out */
+  .bg-grid-fade {
+    position: relative;
+  }
+  .bg-grid-fade::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.5) 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.5) 80%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* Subtle section elevation — slightly lighter bg */
+  .section-elevated {
+    background-color: rgba(128, 128, 128, 0.03);
   }
 
   .border-glow {

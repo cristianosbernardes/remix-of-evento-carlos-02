@@ -266,7 +266,7 @@ const Index = () => {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-background text-white overflow-x-hidden">
 
           {/* ══ NAV — V4 style: logo | urgency | countdown | CTA ══ */}
-          <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/5">
+          <nav className="fixed top-0 left-0 right-0 z-[5000] bg-[rgba(3,12,24,0.92)] backdrop-blur-[12px]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
               {/* Logo */}
               <span className="font-display text-sm sm:text-base tracking-tight flex-shrink-0">
@@ -364,7 +364,7 @@ const Index = () => {
           </div>
 
           {/* ══ STATS — V4: 4 dark cards with red icon, big number, label ══ */}
-          <section className="py-16 sm:py-20">
+          <section className="py-16 sm:py-20 relative bg-grid-fade">
             <div className="max-w-5xl mx-auto px-6">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} className="text-center mb-12">
                 <motion.div variants={fadeUp}>
@@ -397,7 +397,7 @@ const Index = () => {
           </section>
 
           {/* ══ O DILEMA — V4 style ══ */}
-          <section className="py-16 sm:py-20 bg-white/[0.02]">
+          <section className="py-16 sm:py-20 section-elevated">
             <div className="max-w-4xl mx-auto px-6">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
                 <motion.div variants={fadeUp} className="text-center mb-10">
@@ -438,7 +438,7 @@ const Index = () => {
           </section>
 
           {/* ══ SPEAKERS — V4 style: 3+2 grid, dark cards, photo, red accent ══ */}
-          <section className="py-16 sm:py-20">
+          <section className="py-16 sm:py-20 relative bg-grid-fade">
             <div className="max-w-6xl mx-auto px-6">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} className="text-center mb-12">
                 <motion.div variants={fadeUp}>
@@ -476,7 +476,7 @@ const Index = () => {
           </section>
 
           {/* ══ WHAT YOU'LL LEARN — V4 style numbered cards ══ */}
-          <section className="py-16 sm:py-20 bg-white/[0.02]">
+          <section className="py-16 sm:py-20 section-elevated">
             <div className="max-w-5xl mx-auto px-6">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} className="text-center mb-12">
                 <motion.div variants={fadeUp}>
@@ -535,29 +535,12 @@ const Index = () => {
             </div>
           </div>
 
-          {/* ══ FAQ — V4 style ══ */}
-          <section className="py-16 sm:py-20">
-            <div className="max-w-2xl mx-auto px-6">
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
-                <motion.div variants={fadeUp} className="text-center mb-10">
-                  <SectionLabel text="FAQ" />
-                  <SectionHeading>PERGUNTAS FREQUENTES</SectionHeading>
-                </motion.div>
-                <motion.div variants={stagger} className="space-y-3">
-                  {faqs.map((faq, i) => (
-                    <FaqItem key={i} item={faq} isOpen={openFaq === i} toggle={() => setOpenFaq(openFaq === i ? null : i)} />
-                  ))}
-                </motion.div>
-              </motion.div>
-            </div>
-          </section>
-
-          {/* ══ FORM ══ */}
-          <section id="formulario" className="py-16 sm:py-20 bg-white/[0.02]">
+          {/* ══ FORM (antes do FAQ) ══ */}
+          <section id="formulario" className="py-16 sm:py-20 relative bg-grid-fade section-elevated">
             <div className="max-w-xl mx-auto px-6">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
                 <motion.div variants={fadeUp} className="text-center mb-10">
-                  <SectionLabel text="Cadastro Gratuito" />
+                  <SectionLabel text="Inscreva-se" />
                   <SectionHeading>
                     Garanta sua vaga e receba <span className="text-primary">informações exclusivas</span>
                   </SectionHeading>
@@ -625,6 +608,80 @@ const Index = () => {
                     <span className="inline-flex items-center gap-1.5 text-[11px] text-white/30 font-body"><Shield className="w-3 h-3" /> Seus dados estão protegidos</span>
                   </div>
                 </motion.form>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ LOCAL DO EVENTO — V4 style ══ */}
+          <section className="py-16 sm:py-20 relative bg-grid-fade">
+            <div className="max-w-5xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
+                <motion.div variants={fadeUp} className="text-center mb-10">
+                  <SectionLabel text="Onde irá acontecer" />
+                  <SectionHeading>
+                    COMO CHEGAR NO NOSSO <span className="text-primary">PONTO DE ENCONTRO</span>
+                  </SectionHeading>
+                </motion.div>
+
+                {/* Info cards — all same height */}
+                <motion.div variants={fadeUp} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                  <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-5 flex flex-col">
+                    <p className="font-display text-sm text-primary">ENDEREÇO</p>
+                    <p className="font-body text-white/70 text-xs mt-2 leading-relaxed">Sede da Associação Comercial de São Paulo</p>
+                    <p className="font-body text-white/40 text-xs mt-1">Palácio do Comércio — Centro Histórico</p>
+                    <p className="font-body text-white/40 text-xs mt-1">São Paulo, SP</p>
+                  </div>
+                  <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-5 flex flex-col">
+                    <p className="font-display text-sm text-primary">DATA</p>
+                    <p className="font-body text-white/70 text-xs mt-2">09 de Abril de 2026</p>
+                    <p className="font-body text-white/40 text-xs mt-1">(Quarta-feira)</p>
+                  </div>
+                  <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-5 flex flex-col">
+                    <p className="font-display text-sm text-primary">HORÁRIO</p>
+                    <p className="font-body text-white/70 text-xs mt-2">10h00 às 18h00</p>
+                    <p className="font-body text-white/40 text-xs mt-1">(8 horas de imersão total)</p>
+                  </div>
+                  <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-5 flex flex-col">
+                    <p className="font-display text-sm text-primary">FACILIDADES</p>
+                    <p className="font-body text-white/40 text-xs mt-2 leading-relaxed">
+                      • Acesso fácil por transporte público<br />
+                      • Estacionamento no local<br />
+                      • Alimentação disponível<br />
+                      • Centro Histórico de SP
+                    </p>
+                  </div>
+                </motion.div>
+
+                {/* Google Maps embed */}
+                <motion.div variants={fadeUp} className="rounded-2xl overflow-hidden border border-white/5">
+                  <iframe
+                    src="https://maps.google.com/maps?q=Associa%C3%A7%C3%A3o+Comercial+de+S%C3%A3o+Paulo,+Rua+Boa+Vista+51,+Centro,+S%C3%A3o+Paulo,+SP&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                    width="100%"
+                    height="350"
+                    style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) brightness(0.9) contrast(1.1)" }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Local do evento"
+                  />
+                </motion.div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ FAQ — V4 style ══ */}
+          <section className="py-16 sm:py-20 section-elevated">
+            <div className="max-w-2xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
+                <motion.div variants={fadeUp} className="text-center mb-10">
+                  <SectionLabel text="FAQ" />
+                  <SectionHeading>PERGUNTAS FREQUENTES</SectionHeading>
+                </motion.div>
+                <motion.div variants={stagger} className="space-y-3">
+                  {faqs.map((faq, i) => (
+                    <FaqItem key={i} item={faq} isOpen={openFaq === i} toggle={() => setOpenFaq(openFaq === i ? null : i)} />
+                  ))}
+                </motion.div>
               </motion.div>
             </div>
           </section>
