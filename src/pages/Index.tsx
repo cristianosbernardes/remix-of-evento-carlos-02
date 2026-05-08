@@ -14,11 +14,6 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import carlosSpeaker from "@/assets/carlos-speaker.webp";
-import demaSpeaker from "@/assets/dema-speaker.webp";
-import issaoSpeaker from "@/assets/issao-speaker.webp";
-import lidianaSpeaker from "@/assets/lidiana-speaker.webp";
-import tiagoSpeaker from "@/assets/tiago-speaker.webp";
-import thiagoSpeaker from "@/assets/thiago-speaker.webp";
 // Hero image will be added later
 // import carlosHero from "@/assets/carlos-hero.webp";
 
@@ -50,11 +45,6 @@ const questions = [
 
 const speakers = [
   { name: "Carlos Arantes", role: "CEO da UseVertice e CTA Marketing", bio: "Empresário com mais de 10 anos em vendas online, já faturou milhões no e-commerce e ajudou empresas a crescer no digital.", instagram: "https://www.instagram.com/carlosarantesm/", image: carlosSpeaker, imagePos: "center 0%" },
-  { name: "Lidiana Kohls", role: "Fundadora da UseVertice", bio: "Empresária da moda com atuação nacional e internacional. Mentora de mulheres, unindo imagem, comportamento e posicionamento estratégico.", instagram: "https://www.instagram.com/lidianakohls/", image: lidianaSpeaker },
-  { name: "Tiago Almeida", role: "Fundador da Felizzo", bio: "Ex-executivo com mais de 20 anos em multinacionais, liderando negócios bilionários. Marca que cresce rapidamente em Casa & Cozinha.", instagram: "https://www.instagram.com/talmeida1984/", image: tiagoSpeaker },
-  { name: "Thiago Martins", role: "Fundador da China Fácil", bio: "Especialista em importação com mais de 20 anos. Diretor de grupo logístico que movimenta bilhões e conecta empresas à China.", instagram: "https://www.instagram.com/thiagoimportacao/", image: thiagoSpeaker },
-  { name: "Issao Imamura", role: "Mestre em Percepção Aplicada", bio: "Referência nacional em percepção aplicada ao comportamento, comunicação e tomada de decisão. Mais de 100 mil horas de prática.", instagram: "https://www.instagram.com/issaoimamura/", image: issaoSpeaker },
-  { name: "Dema Oliveira", role: "CEO da Goshen Land", bio: "Ex-executivo Samsung que venceu a Apple com estratégia. Já escalou mais de 600 negócios e é referência nacional em expansão empresarial.", instagram: "https://www.instagram.com/demaoliveiraoficial/", image: demaSpeaker },
 ];
 
 const learnings = [
@@ -76,10 +66,10 @@ const stats = [
   { icon: Users, value: "+50", label: "EMPRESÁRIOS", desc: "Faturando coletivamente milhões em receita anual" },
   { icon: TrendingUp, value: "+6", label: "ESPECIALISTAS", desc: "As maiores autoridades em novo comércio do Brasil" },
   { icon: MapPin, value: "SÃO PAULO", label: "PRESENCIAL", desc: "O maior evento de novo comércio do país" },
-  { icon: Calendar, value: "09.04", label: "1 DIA INTENSIVO", desc: "Conte com 8 horas de imersão total" },
+  { icon: Calendar, value: "19.06", label: "1 DIA INTENSIVO", desc: "Conte com 8 horas de imersão total" },
 ];
 
-const EVENT_DATE = new Date("2026-04-09T10:00:00");
+const EVENT_DATE = new Date("2026-06-19T10:00:00");
 
 /* ═══════════════════════════════════════════
    HOOKS & ANIMATIONS
@@ -243,7 +233,7 @@ const Index = () => {
     setIsSubmitting(true);
     try {
       if (GOOGLE_SHEETS_URL) {
-        // Map form fields to spreadsheet columns A-I (LP02 - 09/04)
+        // Map form fields to spreadsheet columns A-I (LP02 - 19/06)
         const now = new Date();
         const dataHora = now.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
         const payload = {
@@ -354,7 +344,7 @@ const Index = () => {
 
                 {/* Date + Location — V4: Montserrat 500 16px */}
                 <motion.p variants={fadeUp} className="mt-6 font-body font-medium text-white/60 text-base flex items-center gap-3">
-                  <Calendar className="w-4 h-4 text-primary" /> 09 de Abril
+                  <Calendar className="w-4 h-4 text-primary" /> 19 de Junho
                   <span className="text-white/20">|</span>
                   <MapPin className="w-4 h-4 text-primary" /> São Paulo, SP
                 </motion.p>
@@ -463,18 +453,9 @@ const Index = () => {
                 </motion.div>
               </motion.div>
 
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} variants={stagger}>
-                {/* Top row: 3 cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                  {speakers.slice(0, 3).map((s, i) => (
-                    <SpeakerCard key={i} speaker={s} />
-                  ))}
-                </div>
-                {/* Bottom row: 3 cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {speakers.slice(3).map((s, i) => (
-                    <SpeakerCard key={i} speaker={s} />
-                  ))}
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} variants={stagger} className="flex justify-center">
+                <div className="w-full max-w-sm">
+                  <SpeakerCard speaker={speakers[0]} />
                 </div>
               </motion.div>
 
@@ -642,8 +623,8 @@ const Index = () => {
                   </div>
                   <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-5 flex flex-col">
                     <p className="font-display text-sm text-primary">DATA</p>
-                    <p className="font-body text-white/70 text-xs mt-2">09 de Abril de 2026</p>
-                    <p className="font-body text-white/40 text-xs mt-1">(Quarta-feira)</p>
+                    <p className="font-body text-white/70 text-xs mt-2">19 de Junho de 2026</p>
+                    <p className="font-body text-white/40 text-xs mt-1">(Sexta-feira)</p>
                   </div>
                   <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-5 flex flex-col">
                     <p className="font-display text-sm text-primary">HORÁRIO</p>
