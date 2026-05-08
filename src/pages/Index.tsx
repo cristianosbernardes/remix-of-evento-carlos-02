@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import carlosSpeaker from "@/assets/carlos-speaker.webp";
+import carlosHeroBg from "@/assets/carlos-hero-bg.webp";
 // Hero image will be added later
 // import carlosHero from "@/assets/carlos-hero.webp";
 
@@ -309,9 +310,10 @@ const Index = () => {
 
           {/* ══ HERO — V4 style: full-bleed image, centered text overlay ══ */}
           <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16 sm:pt-[72px]">
-            {/* Background — placeholder until hero image is added */}
-            <div className="absolute inset-0 bg-background" />
-            <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] via-transparent to-background" />
+            {/* Background hero image */}
+            <img src={carlosHeroBg} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover object-center" />
+            <div className="absolute inset-0 bg-background/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
 
             {/* Content */}
             <div className="relative z-10 text-center px-6 max-w-4xl mx-auto flex flex-col items-center">
