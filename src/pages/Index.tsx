@@ -273,7 +273,7 @@ const Index = () => {
               </span>
 
               {/* Urgency text — 2 lines like V4 */}
-              <div className="hidden md:block text-center font-body font-medium text-[13px] leading-tight">
+              <div className="hidden lg:block text-center font-body font-medium text-[13px] leading-tight">
                 <span className="text-white/60">GARANTA SEU INGRESSO ANTES</span>
                 <br />
                 <span className="text-white/60">QUE </span><span className="text-white font-bold underline">AS VAGAS SE ESGOTEM!</span>
