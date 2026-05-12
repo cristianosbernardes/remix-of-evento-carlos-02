@@ -8,7 +8,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  CheckCircle2, Loader2, Send, Calendar, MapPin, ArrowRight,
+  CheckCircle2, XCircle, Loader2, Send, Calendar, MapPin, ArrowRight,
   Users, TrendingUp, ShoppingCart, Shield, Instagram,
   Plus, Minus, Zap, Target, Lightbulb, Star,
 } from "lucide-react";
@@ -693,7 +693,7 @@ const Index = () => {
                 </motion.div>
 
                 <motion.div variants={fadeUp} className="text-center mt-8">
-                  <CtaButton onClick={scrollToForm}>Quero Estar do Lado Certo</CtaButton>
+                  <CtaButton onClick={scrollToForm}>Quero Virar o Jogo</CtaButton>
                 </motion.div>
               </motion.div>
             </div>
@@ -928,6 +928,54 @@ const Index = () => {
 
                 <motion.div variants={fadeUp} className="text-center mt-8">
                   <CtaButton onClick={scrollToForm}>Esse Sou Eu — Quero Participar</CtaButton>
+                </motion.div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ NÃO É PARA VOCÊ SE ══ */}
+          <section className="py-16 sm:py-20 relative bg-grid-fade">
+            <div className="max-w-3xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
+                <motion.div variants={fadeUp} className="text-center mb-10">
+                  <SectionLabel text="Seja honesto consigo" />
+                  <SectionHeading>
+                    MAS SE VOCÊ É ASSIM,{" "}
+                    <span className="text-red-400">NÃO VENHA.</span>
+                  </SectionHeading>
+                  <p className="font-body font-medium text-white/50 text-base mt-3 max-w-lg mx-auto">
+                    Vagas são limitadas. Não queremos desperdiçar a sua — nem a nossa.
+                  </p>
+                </motion.div>
+
+                <motion.div variants={fadeUp} className="rounded-2xl bg-[#1A1A1A] border border-red-500/15 p-6 sm:p-8 relative overflow-hidden">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-[3px] bg-red-500/60 rounded-b" />
+                  <ul className="space-y-4 mt-2">
+                    {[
+                      "Está procurando fórmula mágica para enriquecer sem esforço",
+                      "Não tem negócio ativo ou produto para vender",
+                      "Quer conteúdo superficial de 'como ganhar dinheiro online'",
+                      "Não está disposto a implementar o que vai aprender",
+                      "Prefere continuar fazendo o que sempre fez esperando resultados diferentes",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center gap-3 text-white/45 font-body text-[15px]">
+                        <div className="w-6 h-6 rounded bg-red-500/10 border border-red-500/20 flex items-center justify-center flex-shrink-0">
+                          <XCircle className="w-3.5 h-3.5 text-red-400" />
+                        </div>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 pt-5 border-t border-white/5">
+                    <p className="font-body text-white/30 text-sm text-center leading-relaxed">
+                      Se você se identificou com algum item acima, este evento simplesmente não foi feito para você — e tudo bem.{" "}
+                      <span className="text-white/60 font-semibold">Se não se identificou, seu lugar está aqui.</span>
+                    </p>
+                  </div>
+                </motion.div>
+
+                <motion.div variants={fadeUp} className="text-center mt-8">
+                  <CtaButton onClick={scrollToForm}>Meu Lugar É Aqui — Quero Me Inscrever</CtaButton>
                 </motion.div>
               </motion.div>
             </div>
