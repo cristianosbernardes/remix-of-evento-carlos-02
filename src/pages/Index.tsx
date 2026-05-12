@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import {
 import {
   CheckCircle2, Loader2, Send, Calendar, MapPin, ArrowRight,
   Users, TrendingUp, ShoppingCart, Shield, Instagram,
-  Plus, Minus, Zap, Target, Lightbulb,
+  Plus, Minus, Zap, Target, Lightbulb, Star,
 } from "lucide-react";
 import { z } from "zod";
 import carlosSpeaker from "@/assets/carlos-speaker.webp";
@@ -45,14 +45,21 @@ const questions = [
 ];
 
 const speakers = [
-  { name: "Carlos Arantes", role: "CEO da UseVertice e CTA Marketing", bio: "Empresário com mais de 10 anos em vendas online, já faturou milhões no e-commerce e ajudou empresas a crescer no digital.", instagram: "https://www.instagram.com/carlosarantesm/", image: carlosSpeaker, imagePos: "center 0%" },
+  { name: "Carlos Arantes", role: "CEO da UseVertice e CTA Marketing", bio: "Empresário com mais de 10 anos operando no mercado digital. Já ajudou empresários a saírem do zero para o primeiro milhão — inclusive foi pessoalmente à China validar fornecedores e estruturar operações reais. Sem teoria. Só o que funciona na prática.", instagram: "https://www.instagram.com/carlosarantesm/", image: carlosSpeaker, imagePos: "center 0%" },
 ];
 
 const learnings = [
-  { number: "01", title: "E-COMMERCE & MARKETPLACES", subtitle: "Domine os canais de venda", desc: "Estratégias práticas para vender em Shopee, Mercado Livre, Amazon e criar seu e-commerce próprio com alta conversão.", icon: ShoppingCart, bullets: ["Marketplaces que mais vendem", "Precificação estratégica", "Escala de operações"] },
-  { number: "02", title: "TRÁFEGO PAGO & FUNIS", subtitle: "Atraia clientes qualificados", desc: "Aprenda a criar campanhas que geram vendas reais e funis que transformam visitantes em compradores.", icon: Target, bullets: ["Meta Ads & Google Ads", "Funis de alta conversão", "Retorno sobre investimento"] },
-  { number: "03", title: "NETWORKING COM EMPRESÁRIOS", subtitle: "Conexões que valem milhões", desc: "Os maiores negócios não nascem na palestra. Nascem no intervalo, no jantar, no lounge.", icon: Users, bullets: ["Acesso a empresários reais", "Parcerias estratégicas", "Troca de experiências"] },
-  { number: "04", title: "IMPORTAÇÃO & MARCA PRÓPRIA", subtitle: "Da China ao seu cliente", desc: "O caminho completo para importar produtos, criar sua marca própria e multiplicar suas margens.", icon: Zap, bullets: ["Fornecedores confiáveis", "Processo de importação", "Construção de marca"] },
+  { number: "01", title: "Como vender todos os dias nos maiores marketplaces do Brasil", subtitle: "E-Commerce & Marketplaces", desc: "Estratégias práticas para dominar Shopee, Mercado Livre e Amazon — e criar seu e-commerce próprio com alta conversão.", icon: ShoppingCart, bullets: ["Marketplaces que mais vendem", "Precificação estratégica", "Escala de operações"] },
+  { number: "02", title: "Como gerar novos clientes todos os dias sem desperdiçar dinheiro em anúncios", subtitle: "Tráfego Pago & Funis", desc: "Aprenda a criar campanhas que geram vendas reais e funis que transformam visitantes em compradores.", icon: Target, bullets: ["Meta Ads & Google Ads", "Funis de alta conversão", "Retorno sobre investimento"] },
+  { number: "03", title: "Como escalar seu faturamento sem precisar contratar mais funcionários", subtitle: "Escalabilidade & Gestão", desc: "Os sistemas e processos que permitem crescer sem aumentar a estrutura — da mesma forma que quem chegou ao primeiro milhão.", icon: TrendingUp, bullets: ["Automação de processos", "Gestão enxuta", "Operação digital"] },
+  { number: "04", title: "Como importar da China e criar sua marca própria com margem acima de 300%", subtitle: "Importação & Marca Própria", desc: "O caminho completo para importar com segurança, criar sua marca e multiplicar suas margens.", icon: Zap, bullets: ["Fornecedores confiáveis", "Processo de importação", "Construção de marca"] },
+];
+
+const outcomes = [
+  { icon: Lightbulb, title: "Visão clara do mercado", desc: "Você vai entender onde estão as oportunidades reais no novo comércio e como posicionar seu negócio para aproveitá-las — hoje." },
+  { icon: Target, title: "Direcionamento estratégico", desc: "Sai do evento com um caminho definido. Sem dúvidas sobre qual canal focar, qual produto priorizar, qual próximo passo dar." },
+  { icon: CheckCircle2, title: "Caminhos validados", desc: "Não são teorias. São estratégias que já funcionaram para empresários reais — incluindo quem foi do zero ao primeiro milhão." },
+  { icon: TrendingUp, title: "Ideias aplicáveis no seu negócio", desc: "Cada conteúdo foi pensado para que você saia com algo para implementar imediatamente. Sem enrolação." },
 ];
 
 const faqs = [
@@ -75,6 +82,7 @@ const EVENT_DATE = new Date("2026-06-19T10:00:00");
 /* ═══════════════════════════════════════════
    HOOKS & ANIMATIONS
    ═══════════════════════════════════════════ */
+
 
 const useCountdown = () => {
   const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -99,6 +107,164 @@ const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } }
 const scaleIn = {
   hidden: { opacity: 0, scale: 0.9 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+};
+
+/* ═══════════════════════════════════════════
+   VIDEO PLAYER — VSL style
+   ═══════════════════════════════════════════ */
+
+const VideoPlayer = ({ thumbnail }: { thumbnail: string }) => {
+  const [open, setOpen] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Lock scroll + ESC when modal is open
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") handleClose(); };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
+  }, [open]);
+
+  // Autoplay from start whenever modal opens
+  useEffect(() => {
+    if (!open) return;
+    const v = videoRef.current;
+    if (!v) return;
+    v.currentTime = 0;
+    v.muted = true;
+    setMuted(true);
+    v.play().catch(() => {});
+  }, [open]);
+
+  // Sync muted state with native video controls (covers both custom button and browser controls)
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !open) return;
+    const sync = () => setMuted(v.muted);
+    v.addEventListener("volumechange", sync);
+    return () => v.removeEventListener("volumechange", sync);
+  }, [open]);
+
+  const handleClose = () => {
+    videoRef.current?.pause();
+    setOpen(false);
+    setMuted(true);
+  };
+
+  const handleUnmute = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = false;
+    v.currentTime = 0;
+    v.play().catch(() => {});
+  };
+
+  return (
+    <>
+      {/* ── Thumbnail / play button ── */}
+      <div
+        onClick={() => setOpen(true)}
+        className="relative cursor-pointer group rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-primary/10"
+        style={{ maxWidth: 520, width: "100%", aspectRatio: "16/9" }}
+      >
+        <img src={thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover object-center scale-105 group-hover:scale-100 transition-transform duration-700" />
+        <div className="absolute inset-0 bg-black/55 group-hover:bg-black/45 transition-colors duration-300" />
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 to-transparent" />
+
+        {/* Badge */}
+        <div className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-sm border border-primary/30 flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+          <span className="text-primary text-[10px] font-body font-bold uppercase tracking-wider">Última Edição</span>
+        </div>
+
+        {/* Play button */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative">
+            <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" style={{ animationDuration: "1.5s" }} />
+            <span className="absolute inset-0 rounded-full bg-primary/20 animate-ping" style={{ animationDuration: "1.5s", animationDelay: "0.5s" }} />
+            <div className="relative w-[72px] h-[72px] rounded-full bg-primary flex items-center justify-center shadow-2xl shadow-primary/60 group-hover:scale-110 transition-transform duration-300">
+              <div className="ml-1.5" style={{ width: 0, height: 0, borderTop: "12px solid transparent", borderBottom: "12px solid transparent", borderLeft: "20px solid black" }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom info */}
+        <div className="absolute bottom-0 inset-x-0 p-5">
+          <p className="font-display text-white text-base leading-tight">FÓRUM NOVO COMÉRCIO 2026</p>
+          <p className="font-body text-white/50 text-xs mt-1">Clique e veja a energia da última edição</p>
+        </div>
+      </div>
+
+      {/* ── Modal ── */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+            onClick={handleClose}
+          >
+            <div className="absolute inset-0 bg-black/92 backdrop-blur-md" />
+
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+              className="relative z-10 flex flex-col items-center gap-3 w-full"
+              style={{ maxWidth: 720 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close */}
+              <div className="w-full flex justify-end">
+                <button
+                  onClick={handleClose}
+                  className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white/60 hover:text-white font-body text-xs flex items-center gap-1.5"
+                >
+                  ✕ Fechar
+                </button>
+              </div>
+
+              {/* Video container */}
+              <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black" style={{ aspectRatio: "9/16", maxHeight: "75vh" }}>
+                <video
+                  ref={videoRef}
+                  src="/evento-video.mp4"
+                  className="w-full h-full object-contain"
+                  playsInline
+                  controls
+                  muted={muted}
+                  loop={false}
+                />
+
+                {/* Unmute overlay — shown while muted */}
+                {muted && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-x-0 bottom-16 flex justify-center pointer-events-none"
+                  >
+                    <button
+                      onClick={handleUnmute}
+                      className="pointer-events-auto flex items-center gap-2 px-5 py-3 rounded-full bg-primary text-black font-body font-bold text-sm shadow-xl shadow-primary/40 hover:brightness-110 transition-all animate-bounce"
+                      style={{ animationDuration: "2s" }}
+                    >
+                      🔊 Clique para ativar o som
+                    </button>
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
 };
 
 /* ═══════════════════════════════════════════
@@ -250,6 +416,12 @@ const Index = () => {
         };
         await fetch(GOOGLE_SHEETS_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       }
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'Lead', {
+          content_name: 'Fórum Novo Comércio 2026',
+          content_category: 'Evento',
+        });
+      }
       navigate("/obrigado");
     } catch { setErrors({ form: "Erro ao enviar. Tente novamente." }); }
     finally { setIsSubmitting(false); }
@@ -322,25 +494,27 @@ const Index = () => {
                 <motion.div variants={fadeUp}>
                   <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-[13px] font-body text-white/70">
                     <Zap className="w-4 h-4 text-primary" />
-                    A diferença não é esforço. <span className="text-primary font-bold">É perspectiva.</span>
+                    19 de Junho · São Paulo · <span className="text-primary font-bold">Vagas Limitadas</span>
                   </span>
                 </motion.div>
 
-                {/* Headline — V4: Dela Gothic One 38px */}
-                <motion.h1 variants={fadeUp} className="font-display text-[clamp(1.75rem,5.5vw,2.4rem)] mt-8 leading-[1.35] uppercase">
-                  Corre o dia inteiro. No fim, a empresa{" "}
-                  <span className="text-primary">continua no mesmo lugar</span>
+                {/* Headline */}
+                <motion.h1 variants={fadeUp} className="font-display text-[clamp(1.75rem,5.5vw,2.5rem)] mt-8 leading-[1.3] uppercase">
+                  O comércio mudou.{" "}
+                  <span className="text-primary">Enquanto a maioria ainda não percebeu</span>{" "}
+                  — outros estão faturando todos os dias pela internet.
                 </motion.h1>
 
-                {/* Subtitle — V4: Montserrat 500 20px */}
+                {/* Subtitle */}
                 <motion.p variants={fadeUp} className="mt-6 text-white/60 font-body font-medium text-base sm:text-xl max-w-2xl leading-[1.4]">
-                  Enquanto você vive como refém das urgências, <span className="text-white font-semibold">seus concorrentes já desenharam os próximos 10 anos</span> de seus negócios.
+                  A pergunta não é SE você vai se adaptar ao novo comércio.{" "}
+                  <span className="text-white font-semibold">É quando — e de qual lado você vai estar.</span>
                 </motion.p>
 
-                {/* CTA — V4: red bg, bold, uppercase, arrow */}
+                {/* CTA */}
                 <motion.div variants={fadeUp} className="mt-8">
                   <CtaButton onClick={scrollToForm} className="px-10 sm:px-14 py-5 text-base glow-green-strong">
-                    Quero Mudar a Perspectiva
+                    Quero Estar do Lado Certo
                   </CtaButton>
                 </motion.div>
 
@@ -399,42 +573,95 @@ const Index = () => {
             </div>
           </section>
 
-          {/* ══ O DILEMA — V4 style ══ */}
+          {/* ══ O PROBLEMA — ANTES/DEPOIS ══ */}
           <section className="py-16 sm:py-20 section-elevated">
             <div className="max-w-4xl mx-auto px-6">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
                 <motion.div variants={fadeUp} className="text-center mb-10">
-                  <SectionLabel text="O Dilema" />
+                  <SectionLabel text="O problema" />
                   <SectionHeading>
-                    TODO EMPRESÁRIO ENFRENTA <span className="text-primary">O MESMO DILEMA</span>
+                    O PROBLEMA DA MAIORIA DOS EMPRESÁRIOS{" "}
+                    <span className="text-primary">NÃO ESTÁ NAS VENDAS.</span>
                   </SectionHeading>
+                  <p className="font-body font-medium text-white/50 text-base mt-3">Está na forma como enxergam o mercado.</p>
                 </motion.div>
 
                 <motion.div variants={fadeUp} className="grid sm:grid-cols-2 gap-5">
                   <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-6 relative overflow-hidden">
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-red-500/80 rounded-b" />
-                    <p className="font-body font-bold text-red-400/80 text-xs uppercase tracking-wider mt-2 mb-3">O curto prazo sufoca</p>
-                    <p className="font-body text-white/50 text-[15px] leading-relaxed">
-                      Contas, clientes, crises, urgências. Você vive resolvendo o HOJE... <span className="text-white font-medium">mas o AMANHÃ nunca chega.</span>
-                    </p>
-                    <p className="font-body text-white/35 text-[15px] mt-3 leading-relaxed">
-                      Quando olha pra trás, percebe: mais um ano passou e <span className="text-red-400/70 font-medium">você continua no mesmo lugar.</span>
-                    </p>
+                    <p className="font-body font-bold text-red-400/80 text-xs uppercase tracking-wider mt-2 mb-4">Enquanto muitos:</p>
+                    <ul className="space-y-3">
+                      {[
+                        "Brigam por preço no mercado físico",
+                        "Trabalham com margem cada vez mais apertada",
+                        "Dependem de uma única fonte de clientes",
+                        "Veem o digital como complicado demais",
+                        "Continuam no mesmo lugar ano após ano",
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-2.5 text-white/45 font-body text-[14px] leading-snug">
+                          <span className="mt-1 w-3.5 h-3.5 rounded-full border border-red-500/40 flex items-center justify-center flex-shrink-0">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500/60" />
+                          </span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-6 relative overflow-hidden">
+                  <div className="rounded-2xl bg-[#1A1A1A] border border-primary/10 p-6 relative overflow-hidden">
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-primary rounded-b" />
-                    <p className="font-body font-bold text-primary text-xs uppercase tracking-wider mt-2 mb-3">A solução existe</p>
-                    <p className="font-body text-white/50 text-[15px] leading-relaxed">
-                      O problema não é falta de trabalho. <span className="text-white font-medium">É falta de um trajeto claro.</span>
-                    </p>
-                    <p className="font-body text-white/35 text-[15px] mt-3 leading-relaxed">
-                      A rotina que te obriga a sobreviver ao mês e nunca <span className="text-primary font-medium">construir os próximos 10 anos.</span>
-                    </p>
+                    <p className="font-body font-bold text-primary text-xs uppercase tracking-wider mt-2 mb-4">Outros empresários estão:</p>
+                    <ul className="space-y-3">
+                      {[
+                        "Vendendo todos os dias pela internet",
+                        "Dominando Shopee, Mercado Livre e Amazon",
+                        "Gerando clientes com tráfego pago no automático",
+                        "Escalando sem precisar de mais funcionários",
+                        "Chegando ao primeiro milhão — e além",
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-2.5 text-white/70 font-body text-[14px] leading-snug">
+                          <CheckCircle2 className="mt-0.5 w-4 h-4 text-primary flex-shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </motion.div>
 
+                <motion.div variants={fadeUp} className="text-center mt-6">
+                  <p className="font-body text-white/60 text-base">
+                    E é exatamente isso que você vai aprender no{" "}
+                    <span className="text-primary font-bold">Fórum Novo Comércio.</span>
+                  </p>
+                </motion.div>
+
+                <motion.div variants={fadeUp} className="text-center mt-8">
+                  <CtaButton onClick={scrollToForm}>Quero Estar do Lado Certo</CtaButton>
+                </motion.div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ VÍDEO — ÚLTIMA EDIÇÃO ══ */}
+          <section className="py-16 sm:py-20 relative bg-grid-fade">
+            <div className="max-w-5xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
+                <motion.div variants={fadeUp} className="text-center mb-10">
+                  <SectionLabel text="Última edição" />
+                  <SectionHeading>
+                    VEJA COMO FOI A <span className="text-primary">ÚLTIMA EDIÇÃO</span>
+                  </SectionHeading>
+                  <p className="font-body font-medium text-white/50 text-lg mt-4 max-w-lg mx-auto">
+                    Mais de 50 empresários reunidos para{" "}
+                    <span className="text-white font-semibold">transformar seus negócios em um único dia.</span>
+                  </p>
+                </motion.div>
+
+                <motion.div variants={scaleIn} className="flex justify-center">
+                  <VideoPlayer thumbnail={carlosHeroBg} />
+                </motion.div>
+
                 <motion.div variants={fadeUp} className="text-center mt-10">
-                  <CtaButton onClick={scrollToForm}>Quero Mudar a Perspectiva</CtaButton>
+                  <CtaButton onClick={scrollToForm}>Quero Estar na Próxima Edição</CtaButton>
                 </motion.div>
               </motion.div>
             </div>
@@ -450,7 +677,7 @@ const Index = () => {
                     E QUEM ESTÁ NO PALCO DO <span className="text-primary">FÓRUM NOVO COMÉRCIO?</span>
                   </SectionHeading>
                   <p className="font-body font-medium text-white/50 text-lg mt-4 max-w-lg mx-auto">
-                    Autoridades que <span className="text-white font-semibold">construíram impérios</span> onde outros viam apenas caos.
+                    Aprenda diretamente com quem <span className="text-white font-semibold">vive o que ensina — todos os dias.</span>
                   </p>
                 </motion.div>
               </motion.div>
@@ -472,13 +699,12 @@ const Index = () => {
             <div className="max-w-5xl mx-auto px-6">
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} className="text-center mb-12">
                 <motion.div variants={fadeUp}>
-                  <SectionLabel text="O que você vai aprender" />
+                  <SectionLabel text="Conteúdo do evento" />
                   <SectionHeading>
-                    ISSO É MAIS DO QUE UM EVENTO.{" "}
-                    <span className="text-primary">É O ANTÍDOTO PARA O IMEDIATISMO.</span>
+                    DURANTE O EVENTO, VOCÊ VAI ENTENDER:
                   </SectionHeading>
                   <p className="font-body font-medium text-white/50 text-lg mt-4 max-w-lg mx-auto">
-                    Você não vai aprender tática. Vai aprender <span className="text-white font-semibold">arquitetura.</span>
+                    Sem teoria. Sem enrolação. <span className="text-white font-semibold">Só o que realmente está funcionando hoje.</span>
                   </p>
                 </motion.div>
               </motion.div>
@@ -513,6 +739,140 @@ const Index = () => {
 
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mt-12">
                 <CtaButton onClick={scrollToForm}>Quero Aprender Tudo Isso</CtaButton>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ VOCÊ VAI SAIR COM ══ */}
+          <section className="py-16 sm:py-20 section-elevated">
+            <div className="max-w-5xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
+                <motion.div variants={fadeUp} className="text-center mb-12">
+                  <SectionLabel text="A transformação" />
+                  <SectionHeading>
+                    VOCÊ VAI SAIR DO EVENTO{" "}
+                    <span className="text-primary">DIFERENTE.</span>
+                  </SectionHeading>
+                  <p className="font-body font-medium text-white/50 text-lg mt-4 max-w-lg mx-auto">
+                    Não é teoria. É{" "}
+                    <span className="text-white font-semibold">direcionamento real para o seu negócio.</span>
+                  </p>
+                </motion.div>
+
+                <motion.div variants={stagger} className="grid sm:grid-cols-2 gap-4">
+                  {outcomes.map((item, i) => (
+                    <motion.div key={i} variants={scaleIn} className="rounded-2xl bg-[#1A1A1A] border border-white/5 p-6 relative overflow-hidden hover:border-primary/20 transition-colors">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-primary rounded-b" />
+                      <div className="flex items-start gap-4 mt-2">
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                          <item.icon className="w-4 h-4 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-display text-sm text-white leading-tight">{item.title}</h3>
+                          <p className="text-white/40 font-body text-xs mt-2 leading-relaxed">{item.desc}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+
+                <motion.div variants={fadeUp} className="text-center mt-10">
+                  <CtaButton onClick={scrollToForm}>Quero Essa Transformação</CtaButton>
+                </motion.div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ CASE STUDY — FELIZZO ══ */}
+          <section className="py-16 sm:py-20 relative bg-grid-fade">
+            <div className="max-w-4xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
+                <motion.div variants={fadeUp} className="text-center mb-10">
+                  <SectionLabel text="Caso real" />
+                  <SectionHeading>
+                    VOCÊ PODE SER O <span className="text-primary">PRÓXIMO.</span>
+                  </SectionHeading>
+                </motion.div>
+
+                <motion.div variants={scaleIn} className="rounded-2xl bg-[#1A1A1A] border border-primary/15 p-6 sm:p-8 relative overflow-hidden">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-[3px] bg-primary rounded-b" />
+                  <div className="flex flex-col gap-6 mt-4">
+                    <div className="flex items-center gap-3">
+                      <div className="px-3 py-1.5 rounded bg-primary/10 border border-primary/20">
+                        <span className="font-display text-xs text-primary tracking-wider">FELIZZO</span>
+                      </div>
+                      <div className="flex gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-3.5 h-3.5 text-primary fill-primary" />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="font-display text-[clamp(1.1rem,3vw,1.5rem)] text-white leading-tight">
+                      Do zero ao{" "}
+                      <span className="text-primary">R$1.000.000 faturados</span>{" "}
+                      no primeiro ano.
+                    </p>
+                    <p className="font-body text-white/50 text-sm leading-relaxed max-w-xl">
+                      Começou do absoluto zero no e-commerce. Aplicou as estratégias, foi pessoalmente à China com Carlos Arantes validar fornecedores, e no primeiro ano de operação já atingiu{" "}
+                      <span className="text-white font-semibold">R$1 milhão faturados — sem ter nenhum funcionário.</span>
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {[
+                        { value: "R$1M", label: "No 1º Ano" },
+                        { value: "Zero", label: "Funcionários" },
+                        { value: "Do Zero", label: "Ponto de Partida" },
+                      ].map((s, i) => (
+                        <div key={i} className="px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                          <p className="font-display text-primary text-lg">{s.value}</p>
+                          <p className="font-body text-white/30 text-[10px] uppercase tracking-wider mt-0.5">{s.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div variants={fadeUp} className="text-center mt-8">
+                  <CtaButton onClick={scrollToForm}>Quero Resultados Como Esses</CtaButton>
+                </motion.div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* ══ ESTE EVENTO É PARA VOCÊ QUE ══ */}
+          <section className="py-16 sm:py-20 section-elevated">
+            <div className="max-w-3xl mx-auto px-6">
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}>
+                <motion.div variants={fadeUp} className="text-center mb-10">
+                  <SectionLabel text="Quem é esse evento" />
+                  <SectionHeading>
+                    ESSE EVENTO É PARA{" "}
+                    <span className="text-primary">VOCÊ QUE:</span>
+                  </SectionHeading>
+                </motion.div>
+
+                <motion.div variants={fadeUp} className="rounded-2xl bg-[#1A1A1A] border border-primary/10 p-6 sm:p-8 relative overflow-hidden">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-[3px] bg-primary rounded-b" />
+                  <ul className="space-y-4 mt-2">
+                    {[
+                      "Já tem negócio e quer crescer de verdade",
+                      "Quer vender na internet e não sabe por onde começar",
+                      "Quer escalar seu faturamento sem aumentar a estrutura",
+                      "Quer sair do modelo tradicional e entrar no novo comércio",
+                      "Está cansado de teoria e quer só o que realmente funciona",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center gap-3 text-white/70 font-body text-[15px]">
+                        <div className="w-6 h-6 rounded bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                        </div>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+
+                <motion.div variants={fadeUp} className="text-center mt-8">
+                  <CtaButton onClick={scrollToForm}>Esse Sou Eu — Quero Participar</CtaButton>
+                </motion.div>
               </motion.div>
             </div>
           </section>
