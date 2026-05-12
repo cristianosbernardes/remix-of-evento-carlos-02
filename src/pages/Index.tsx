@@ -113,10 +113,10 @@ const scaleIn = {
    VIDEO PLAYER — VSL style
    ═══════════════════════════════════════════ */
 
-const VideoPlayer = ({ thumbnail }: { thumbnail: string }) => {
+const VideoPlayer = () => {
   const [open, setOpen] = useState(false);
-  const [muted, setMuted] = useState(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const inlineRef = useRef<HTMLVideoElement>(null);
+  const modalRef = useRef<HTMLVideoElement>(null);
 
   // Lock scroll + ESC when modal is open
   useEffect(() => {
@@ -127,51 +127,46 @@ const VideoPlayer = ({ thumbnail }: { thumbnail: string }) => {
     return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
   }, [open]);
 
-  // Autoplay from start whenever modal opens
+  // When modal opens: play modal video with sound from beginning
   useEffect(() => {
     if (!open) return;
-    const v = videoRef.current;
+    const v = modalRef.current;
     if (!v) return;
     v.currentTime = 0;
-    v.muted = true;
-    setMuted(true);
+    v.muted = false;
     v.play().catch(() => {});
   }, [open]);
 
-  // Sync muted state with native video controls (covers both custom button and browser controls)
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v || !open) return;
-    const sync = () => setMuted(v.muted);
-    v.addEventListener("volumechange", sync);
-    return () => v.removeEventListener("volumechange", sync);
-  }, [open]);
-
-  const handleClose = () => {
-    videoRef.current?.pause();
-    setOpen(false);
-    setMuted(true);
+  const handleOpen = () => {
+    inlineRef.current?.pause();
+    setOpen(true);
   };
 
-  const handleUnmute = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = false;
-    v.currentTime = 0;
-    v.play().catch(() => {});
+  const handleClose = () => {
+    modalRef.current?.pause();
+    setOpen(false);
+    inlineRef.current?.play().catch(() => {});
   };
 
   return (
     <>
-      {/* ── Thumbnail / play button ── */}
+      {/* ── Inline silent preview ── */}
       <div
-        onClick={() => setOpen(true)}
         className="relative cursor-pointer group rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-primary/10"
-        style={{ maxWidth: 520, width: "100%", aspectRatio: "16/9" }}
+        style={{ maxWidth: 520, width: "100%", aspectRatio: "9/16" }}
+        onClick={handleOpen}
       >
-        <img src={thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover object-center scale-105 group-hover:scale-100 transition-transform duration-700" />
-        <div className="absolute inset-0 bg-black/55 group-hover:bg-black/45 transition-colors duration-300" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 to-transparent" />
+        <video
+          ref={inlineRef}
+          src="/evento-video.mp4"
+          className="absolute inset-0 w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-300" />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent" />
 
         {/* Badge */}
         <div className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-sm border border-primary/30 flex items-center gap-1.5">
@@ -179,7 +174,7 @@ const VideoPlayer = ({ thumbnail }: { thumbnail: string }) => {
           <span className="text-primary text-[10px] font-body font-bold uppercase tracking-wider">Última Edição</span>
         </div>
 
-        {/* Play button */}
+        {/* Pulsing play button */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative">
             <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" style={{ animationDuration: "1.5s" }} />
@@ -193,11 +188,11 @@ const VideoPlayer = ({ thumbnail }: { thumbnail: string }) => {
         {/* Bottom info */}
         <div className="absolute bottom-0 inset-x-0 p-5">
           <p className="font-display text-white text-base leading-tight">FÓRUM NOVO COMÉRCIO 2026</p>
-          <p className="font-body text-white/50 text-xs mt-1">Clique e veja a energia da última edição</p>
+          <p className="font-body text-white/50 text-xs mt-1">Clique para assistir com som</p>
         </div>
       </div>
 
-      {/* ── Modal ── */}
+      {/* ── Modal with sound ── */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -216,7 +211,7 @@ const VideoPlayer = ({ thumbnail }: { thumbnail: string }) => {
               exit={{ scale: 0.92, opacity: 0 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
               className="relative z-10 flex flex-col items-center gap-3 w-full"
-              style={{ maxWidth: 720 }}
+              style={{ maxWidth: 420 }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close */}
@@ -230,34 +225,14 @@ const VideoPlayer = ({ thumbnail }: { thumbnail: string }) => {
               </div>
 
               {/* Video container */}
-              <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black" style={{ aspectRatio: "9/16", maxHeight: "75vh" }}>
+              <div className="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-black" style={{ aspectRatio: "9/16", maxHeight: "78vh" }}>
                 <video
-                  ref={videoRef}
+                  ref={modalRef}
                   src="/evento-video.mp4"
                   className="w-full h-full object-contain"
                   playsInline
                   controls
-                  muted={muted}
-                  loop={false}
                 />
-
-                {/* Unmute overlay — shown while muted */}
-                {muted && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="absolute inset-x-0 bottom-16 flex justify-center pointer-events-none"
-                  >
-                    <button
-                      onClick={handleUnmute}
-                      className="pointer-events-auto flex items-center gap-2 px-5 py-3 rounded-full bg-primary text-black font-body font-bold text-sm shadow-xl shadow-primary/40 hover:brightness-110 transition-all animate-bounce"
-                      style={{ animationDuration: "2s" }}
-                    >
-                      🔊 Clique para ativar o som
-                    </button>
-                  </motion.div>
-                )}
               </div>
             </motion.div>
           </motion.div>
@@ -657,7 +632,7 @@ const Index = () => {
                 </motion.div>
 
                 <motion.div variants={scaleIn} className="flex justify-center">
-                  <VideoPlayer thumbnail={carlosHeroBg} />
+                  <VideoPlayer />
                 </motion.div>
 
                 <motion.div variants={fadeUp} className="text-center mt-10">
