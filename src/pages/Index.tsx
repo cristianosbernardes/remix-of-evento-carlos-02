@@ -49,10 +49,10 @@ const speakers = [
 ];
 
 const learnings = [
-  { number: "01", title: "Como vender todos os dias nos maiores marketplaces do Brasil", subtitle: "E-Commerce & Marketplaces", desc: "Estratégias práticas para dominar Shopee, Mercado Livre e Amazon — e criar seu e-commerce próprio com alta conversão.", icon: ShoppingCart, bullets: ["Marketplaces que mais vendem", "Precificação estratégica", "Escala de operações"] },
-  { number: "02", title: "Como gerar novos clientes todos os dias sem desperdiçar dinheiro em anúncios", subtitle: "Tráfego Pago & Funis", desc: "Aprenda a criar campanhas que geram vendas reais e funis que transformam visitantes em compradores.", icon: Target, bullets: ["Meta Ads & Google Ads", "Funis de alta conversão", "Retorno sobre investimento"] },
-  { number: "03", title: "Como escalar seu faturamento sem precisar contratar mais funcionários", subtitle: "Escalabilidade & Gestão", desc: "Os sistemas e processos que permitem crescer sem aumentar a estrutura — da mesma forma que quem chegou ao primeiro milhão.", icon: TrendingUp, bullets: ["Automação de processos", "Gestão enxuta", "Operação digital"] },
-  { number: "04", title: "Como importar da China e criar sua marca própria com margem acima de 300%", subtitle: "Importação & Marca Própria", desc: "O caminho completo para importar com segurança, criar sua marca e multiplicar suas margens.", icon: Zap, bullets: ["Fornecedores confiáveis", "Processo de importação", "Construção de marca"] },
+  { number: "01", title: "Como vender todos os dias nos maiores marketplaces do Brasil", subtitle: "E-Commerce & Marketplaces", desc: "Estratégias práticas para dominar Shopee, Mercado Livre e Amazon — e criar seu e-commerce próprio com alta conversão.", icon: ShoppingCart, bullets: ["Marketplaces que mais vendem", "Precificação estratégica", "Escala de operações"], gold: false },
+  { number: "02", title: "Como gerar novos clientes todos os dias sem desperdiçar dinheiro em anúncios", subtitle: "Tráfego Pago & Funis", desc: "Aprenda a criar campanhas que geram vendas reais e funis que transformam visitantes em compradores.", icon: Target, bullets: ["Meta Ads & Google Ads", "Funis de alta conversão", "Retorno sobre investimento"], gold: false },
+  { number: "03", title: "Como escalar seu faturamento sem precisar contratar mais funcionários", subtitle: "Escalabilidade & Gestão", desc: "Os sistemas e processos que permitem crescer sem aumentar a estrutura — da mesma forma que quem chegou ao primeiro milhão.", icon: TrendingUp, bullets: ["Automação de processos", "Gestão enxuta", "Operação digital"], gold: true },
+  { number: "04", title: "Como importar da China e criar sua marca própria com margem acima de 300%", subtitle: "Importação & Marca Própria", desc: "O caminho completo para importar com segurança, criar sua marca e multiplicar suas margens.", icon: Zap, bullets: ["Fornecedores confiáveis", "Processo de importação", "Construção de marca"], gold: true },
 ];
 
 const outcomes = [
@@ -272,27 +272,74 @@ const CtaButton = ({ children, onClick, className = "" }: { children: React.Reac
   </button>
 );
 
-/* Speaker card */
+/* Speaker card — horizontal highlight layout */
 const SpeakerCard = ({ speaker: s }: { speaker: typeof speakers[0] }) => (
-  <motion.div variants={scaleIn} className="group relative rounded-2xl overflow-hidden bg-[#1A1A1A] border border-white/5 hover:border-primary/20 transition-all duration-500 h-full">
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[3px] bg-primary rounded-b z-20" />
-    <div className="relative h-72 overflow-hidden">
-      {s.image ? (
-        <img src={s.image} alt={s.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" style={{ objectPosition: (s as any).imagePos || "center top" }} />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-transparent">
-          <span className="font-display text-5xl text-primary/15">{s.name.split(" ").map(n => n[0]).join("")}</span>
+  <motion.div variants={scaleIn} className="group relative rounded-3xl overflow-hidden bg-[#111] border border-white/8 hover:border-primary/25 transition-all duration-500">
+    {/* Green top accent line */}
+    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent z-20" />
+
+    <div className="flex flex-col md:flex-row">
+      {/* ── Left: photo ── */}
+      <div className="relative md:w-[340px] md:flex-shrink-0 h-80 md:h-auto overflow-hidden">
+        {s.image ? (
+          <img
+            src={s.image}
+            alt={s.name}
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+            style={{ objectPosition: (s as any).imagePos || "center top" }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-transparent">
+            <span className="font-display text-7xl text-primary/15">{s.name.split(" ").map((n: string) => n[0]).join("")}</span>
+          </div>
+        )}
+        {/* Gradient fade to right on md+ */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#111]/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#111]" />
+      </div>
+
+      {/* ── Right: bio ── */}
+      <div className="flex-1 p-8 md:p-10 flex flex-col justify-center gap-5">
+        {/* Label */}
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+          <span className="font-body text-primary text-[11px] font-bold uppercase tracking-widest">Palestrante Principal</span>
         </div>
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
-      <a href={s.instagram} target="_blank" rel="noopener noreferrer" className="absolute top-3 right-3 w-8 h-8 rounded bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-primary/20 hover:border-primary/40 transition-all z-10">
-        <Instagram className="w-3.5 h-3.5 text-white/60" />
-      </a>
-    </div>
-    <div className="p-5 -mt-6 relative z-10">
-      <h3 className="font-display text-base text-white leading-tight">{s.name}</h3>
-      <p className="text-primary font-body font-semibold text-xs mt-1">{s.role}</p>
-      <p className="text-white/35 font-body text-xs mt-2 leading-relaxed">{s.bio}</p>
+
+        {/* Name + role */}
+        <div>
+          <h3 className="font-display text-3xl sm:text-4xl text-white leading-none">{s.name}</h3>
+          <p className="text-primary font-body font-semibold text-sm mt-2">{s.role}</p>
+        </div>
+
+        {/* Bio */}
+        <p className="font-body text-white/60 text-base leading-relaxed">{s.bio}</p>
+
+        {/* Credentials */}
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { label: "+10 anos", desc: "no mercado digital", gold: false },
+            { label: "China", desc: "validou fornecedores pessoalmente", gold: false },
+            { label: "R$1M+", desc: "gerados por alunos no 1º ano", gold: true },
+            { label: "Presencial", desc: "aprenda com quem faz", gold: false },
+          ].map((c) => (
+            <div key={c.label} className={`bg-white/4 border rounded-xl px-4 py-3 ${c.gold ? "border-gold/20" : "border-white/6"}`}>
+              <p className={`font-display text-lg leading-none ${c.gold ? "text-gold" : "text-primary"}`}>{c.label}</p>
+              <p className="font-body text-white/40 text-xs mt-1 leading-snug">{c.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Instagram */}
+        <a
+          href={s.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="self-start flex items-center gap-2 px-4 py-2 rounded-full bg-white/6 border border-white/10 hover:bg-primary/10 hover:border-primary/30 transition-all text-white/50 hover:text-white font-body text-sm"
+        >
+          <Instagram className="w-3.5 h-3.5" />
+          @carlosarantesm
+        </a>
+      </div>
     </div>
   </motion.div>
 );
@@ -477,7 +524,7 @@ const Index = () => {
                 <motion.h1 variants={fadeUp} className="font-display text-[clamp(1.75rem,5.5vw,2.5rem)] mt-8 leading-[1.3] uppercase">
                   O comércio mudou.{" "}
                   <span className="text-primary">Enquanto a maioria ainda não percebeu</span>{" "}
-                  — outros estão faturando todos os dias pela internet.
+                  — outros estão <span className="text-gold">faturando todos os dias</span> pela internet.
                 </motion.h1>
 
                 {/* Subtitle */}
@@ -657,10 +704,8 @@ const Index = () => {
                 </motion.div>
               </motion.div>
 
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} variants={stagger} className="flex justify-center">
-                <div className="w-full max-w-sm">
-                  <SpeakerCard speaker={speakers[0]} />
-                </div>
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} variants={stagger}>
+                <SpeakerCard speaker={speakers[0]} />
               </motion.div>
 
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center mt-12">
@@ -686,18 +731,18 @@ const Index = () => {
 
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} variants={stagger} className="space-y-4">
                 {learnings.map((item, i) => (
-                  <motion.div key={i} variants={fadeUp} className="rounded-2xl bg-[#1A1A1A] border border-white/5 overflow-hidden hover:border-primary/20 transition-colors">
-                    <div className="h-[3px] bg-gradient-to-r from-primary via-primary/50 to-transparent" />
+                  <motion.div key={i} variants={fadeUp} className={`rounded-2xl bg-[#1A1A1A] overflow-hidden transition-colors ${(item as any).gold ? "border border-gold/15 hover:border-gold/30" : "border border-white/5 hover:border-primary/20"}`}>
+                    <div className={`h-[3px] bg-gradient-to-r ${(item as any).gold ? "from-gold via-gold/50 to-transparent" : "from-primary via-primary/50 to-transparent"}`} />
                     <div className="flex flex-col sm:flex-row gap-5 p-5 sm:p-6">
                       <div className="flex sm:flex-col items-center sm:items-start gap-3 flex-shrink-0">
-                        <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                          <item.icon className="w-5 h-5 text-primary" />
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${(item as any).gold ? "bg-gold/10 border border-gold/20" : "bg-primary/10 border border-primary/20"}`}>
+                          <item.icon className={`w-5 h-5 ${(item as any).gold ? "text-gold" : "text-primary"}`} />
                         </div>
-                        <span className="font-display text-3xl text-primary/15">{item.number}</span>
+                        <span className={`font-display text-3xl ${(item as any).gold ? "text-gold/15" : "text-primary/15"}`}>{item.number}</span>
                       </div>
                       <div className="flex-1">
                         <h3 className="font-display text-base sm:text-lg text-white leading-tight">{item.title}</h3>
-                        <p className="text-primary font-body font-semibold text-xs mt-1 uppercase tracking-wider">{item.subtitle}</p>
+                        <p className={`font-body font-semibold text-xs mt-1 uppercase tracking-wider ${(item as any).gold ? "text-gold" : "text-primary"}`}>{item.subtitle}</p>
                         <p className="text-white/40 font-body text-sm mt-3 leading-relaxed">{item.desc}</p>
                         <div className="flex flex-wrap gap-2 mt-4">
                           {item.bullets.map((b, j) => (
@@ -765,7 +810,7 @@ const Index = () => {
                 <motion.div variants={fadeUp} className="text-center mb-10">
                   <SectionLabel text="Caso real" />
                   <SectionHeading>
-                    VOCÊ PODE SER O <span className="text-primary">PRÓXIMO.</span>
+                    VOCÊ PODE SER O <span className="text-gold">PRÓXIMO.</span>
                   </SectionHeading>
                 </motion.div>
 
@@ -784,12 +829,12 @@ const Index = () => {
                     </div>
                     <p className="font-display text-[clamp(1.1rem,3vw,1.5rem)] text-white leading-tight">
                       Do zero ao{" "}
-                      <span className="text-primary">R$1.000.000 faturados</span>{" "}
+                      <span className="text-gold">R$1.000.000 faturados</span>{" "}
                       no primeiro ano.
                     </p>
                     <p className="font-body text-white/50 text-sm leading-relaxed max-w-xl">
                       Começou do absoluto zero no e-commerce. Aplicou as estratégias, foi pessoalmente à China com Carlos Arantes validar fornecedores, e no primeiro ano de operação já atingiu{" "}
-                      <span className="text-white font-semibold">R$1 milhão faturados — sem ter nenhum funcionário.</span>
+                      <span className="text-gold font-semibold">R$1 milhão faturados — sem ter nenhum funcionário.</span>
                     </p>
                     <div className="flex flex-wrap gap-3">
                       {[
