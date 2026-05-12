@@ -5,9 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import {
   CheckCircle2, XCircle, Loader2, Send, Calendar, MapPin, ArrowRight,
   Users, TrendingUp, ShoppingCart, Shield, Instagram,
   Plus, Minus, Zap, Target, Lightbulb, Star,
@@ -24,24 +21,55 @@ import carlosHeroBg from "@/assets/carlos-hero-bg.webp";
 
 const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzLoNJYoomxlHgKhn-9LgXK2t4hcDkuUK5p4Gps9Mof7gDNtpZ2n-_KzrRvDgar350V/exec";
 
-const formSchema = z.object({
-  nome: z.string().trim().min(2, "Preencha seu nome completo").max(100),
-  email: z.string().trim().min(1, "Preencha seu e-mail").email("Digite um e-mail válido (ex: nome@email.com)").max(255),
-  telefone: z.string().trim().min(14, "Digite um telefone válido com DDD").max(20),
-  vendeInternet: z.string().min(1, "Selecione uma opção"),
-  canalVenda: z.string().min(1, "Selecione uma opção"),
-  regimeTributario: z.string().min(1, "Selecione uma opção"),
-  principalDesafio: z.string().min(1, "Selecione uma opção"),
-  interesseEvento: z.string().min(1, "Selecione uma opção"),
+const contactSchema = z.object({
+  nome: z.string().trim().min(2, "Preencha seu nome completo"),
+  email: z.string().trim().email("Digite um e-mail válido"),
+  telefone: z.string().trim().min(14, "Digite um telefone válido com DDD"),
 });
-type FormData = z.infer<typeof formSchema>;
 
-const questions = [
-  { name: "vendeInternet" as const, label: "Você já vende pela internet hoje?", options: ["Sim, vendo todos os dias", "Sim, mas ainda estou estruturando", "Já tentei vender online", "Ainda não vendo online"] },
-  { name: "canalVenda" as const, label: "Como sua empresa vende atualmente?", options: ["Loja física", "E-commerce próprio", "Marketplaces (Shopee, Mercado Livre, Amazon)", "Redes sociais", "Ainda não vendo"] },
-  { name: "regimeTributario" as const, label: "Qual o regime tributário da sua empresa?", options: ["Ainda não tenho empresa", "MEI", "Simples Nacional", "Lucro Presumido", "Lucro Real", "Não sei informar"] },
-  { name: "principalDesafio" as const, label: "Qual o principal desafio do seu negócio hoje?", options: ["Aumentar vendas", "Atrair mais clientes", "Estruturar vendas online", "Escalar o negócio", "Encontrar novos produtos"] },
-  { name: "interesseEvento" as const, label: "Interesse em evento presencial em São Paulo?", options: ["Sim, quero participar", "Quero mais informações", "Apenas estou pesquisando"] },
+const multiStepQuestions = [
+  {
+    id: "vendeInternet",
+    label: "Você já vende pela internet hoje?",
+    options: ["Sim, vendo todos os dias", "Sim, mas ainda estou estruturando", "Já tentei vender online", "Ainda não vendo online"],
+    disqualify: [] as string[],
+  },
+  {
+    id: "canalVenda",
+    label: "Como sua empresa vende atualmente?",
+    options: ["Loja física", "E-commerce próprio", "Marketplaces (Shopee, Mercado Livre, Amazon)", "Redes sociais", "Ainda não vendo", "Apenas curiosidade"],
+    disqualify: ["Apenas curiosidade"],
+  },
+  {
+    id: "faturamento",
+    label: "Qual o faturamento da sua empresa por mês?",
+    options: ["Acima de R$ 500k", "De R$ 70k a R$ 500k", "De R$ 20k a R$ 70k", "Até R$ 20k"],
+    disqualify: [] as string[],
+  },
+  {
+    id: "objetivo",
+    label: "Qual seu objetivo de faturamento nos próximos 6 meses com vendas online?",
+    options: ["Entre R$ 10k a R$ 50k/mês", "Entre R$ 50k a R$ 100k/mês", "Entre R$ 100k a R$ 500k/mês", "Acima de R$ 500k/mês"],
+    disqualify: [] as string[],
+  },
+  {
+    id: "investimento",
+    label: "Quanto você está disposto a investir agora?",
+    options: ["Até R$ 10k", "Entre R$ 10k a R$ 50k", "Acima de R$ 50k"],
+    disqualify: ["Até R$ 10k"],
+  },
+  {
+    id: "desafio",
+    label: "Qual o principal desafio do seu negócio hoje?",
+    options: ["Aumentar vendas", "Atrair mais clientes", "Estruturar vendas online", "Escalar o negócio"],
+    disqualify: [] as string[],
+  },
+  {
+    id: "interesse",
+    label: "Você teria interesse em participar de um evento presencial em São Paulo para aprender estratégias de crescimento empresarial?",
+    options: ["Sim, quero participar", "Quero mais informações", "Apenas estou pesquisando"],
+    disqualify: ["Apenas estou pesquisando"],
+  },
 ];
 
 const speakers = [
@@ -380,78 +408,261 @@ const FaqItem = ({ item, isOpen, toggle }: { item: typeof faqs[0]; isOpen: boole
 );
 
 /* ═══════════════════════════════════════════
-   MAIN COMPONENT
+   MULTI-STEP QUALIFICATION FORM
    ═══════════════════════════════════════════ */
 
-const Index = () => {
-  const [formData, setFormData] = useState<Partial<FormData>>({});
-  const [errors, setErrors] = useState<Record<string, string>>({});
+const MultiStepForm = () => {
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [contact, setContact] = useState({ nome: "", email: "", telefone: "" });
+  const [contactErrors, setContactErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const countdown = useCountdown();
   const navigate = useNavigate();
 
-  const maskPhone = (value: string) => {
-    const digits = value.replace(/\D/g, "").slice(0, 11);
-    if (digits.length <= 2) return digits.length ? `(${digits}` : "";
-    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
-    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  const TOTAL_Q = multiStepQuestions.length;
+
+  const maskPhone = (v: string) => {
+    const d = v.replace(/\D/g, "").slice(0, 11);
+    if (d.length <= 2) return d.length ? `(${d}` : "";
+    if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+    return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
   };
 
-  const handleChange = (field: keyof FormData, value: string) => {
-    if (field === "telefone") {
-      // Block non-numeric input and apply mask
-      const onlyDigits = value.replace(/\D/g, "");
-      if (value !== "" && onlyDigits === "" && value !== "(") return; // typed only letters
-      value = maskPhone(value);
+  const handleOptionSelect = (option: string) => {
+    const q = multiStepQuestions[step];
+    setAnswers((prev) => ({ ...prev, [q.id]: option }));
+    if (q.disqualify.includes(option)) {
+      setStep(TOTAL_Q + 1);
+    } else if (step === TOTAL_Q - 1) {
+      setStep(TOTAL_Q);
+    } else {
+      setStep(step + 1);
     }
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) setErrors((prev) => { const n = { ...prev }; delete n[field]; return n; });
+  };
+
+  const handleContactChange = (field: "nome" | "email" | "telefone", value: string) => {
+    if (field === "telefone") value = maskPhone(value);
+    setContact((prev) => ({ ...prev, [field]: value }));
+    if (contactErrors[field]) setContactErrors((prev) => { const n = { ...prev }; delete n[field]; return n; });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrors({});
-    const result = formSchema.safeParse(formData);
+    setSubmitError("");
+    const result = contactSchema.safeParse(contact);
     if (!result.success) {
       const fe: Record<string, string> = {};
       result.error.errors.forEach((err) => { if (err.path[0]) fe[err.path[0] as string] = err.message; });
-      setErrors(fe);
+      setContactErrors(fe);
       return;
     }
     setIsSubmitting(true);
     try {
       if (GOOGLE_SHEETS_URL) {
-        // Map form fields to spreadsheet columns A-I (LP02 - 19/06)
-        const now = new Date();
-        const dataHora = now.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
-        const payload = {
-          Data: dataHora,                                  // Col A
-          Nome: result.data.nome,                          // Col B
-          "E-mail": result.data.email,                     // Col C
-          WhatsApp: result.data.telefone,                   // Col D
-          "Vende pela internet": result.data.vendeInternet, // Col E
-          "Como vende": result.data.canalVenda,             // Col F
-          "Regime tributário": result.data.regimeTributario, // Col G
-          "Desafio atual": result.data.principalDesafio,    // Col H
-          "Vem no evento": result.data.interesseEvento,     // Col I
-        };
-        await fetch(GOOGLE_SHEETS_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      }
-      if (typeof window.fbq === 'function') {
-        window.fbq('track', 'Lead', {
-          content_name: 'Fórum Novo Comércio 2026',
-          content_category: 'Evento',
+        const dataHora = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+        await fetch(GOOGLE_SHEETS_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            Data: dataHora,
+            Nome: result.data.nome,
+            "E-mail": result.data.email,
+            WhatsApp: result.data.telefone,
+            "Vende pela internet": answers.vendeInternet || "",
+            "Como vende": answers.canalVenda || "",
+            "Faturamento mensal": answers.faturamento || "",
+            "Objetivo 6 meses": answers.objetivo || "",
+            "Investimento disponível": answers.investimento || "",
+            "Desafio atual": answers.desafio || "",
+            "Vem no evento": answers.interesse || "",
+          }),
         });
       }
+      if (typeof window.fbq === "function") {
+        window.fbq("track", "Lead", { content_name: "Fórum Novo Comércio 2026", content_category: "Evento" });
+      }
       navigate("/obrigado");
-    } catch { setErrors({ form: "Erro ao enviar. Tente novamente." }); }
-    finally { setIsSubmitting(false); }
+    } catch {
+      setSubmitError("Erro ao enviar. Tente novamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
+  const progressPct = step >= TOTAL_Q ? 95 : Math.round((step / TOTAL_Q) * 92);
+
+  if (step === TOTAL_Q + 1) {
+    return (
+      <div className="bg-[#1A1A1A] border border-white/5 rounded-2xl p-6 sm:p-10 text-center space-y-6">
+        <div className="w-14 h-14 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center mx-auto">
+          <XCircle className="w-7 h-7 text-white/30" />
+        </div>
+        <div className="space-y-3">
+          <p className="font-display text-xl text-white leading-tight">Entendemos o seu momento</p>
+          <p className="font-body text-white/50 text-sm leading-relaxed max-w-sm mx-auto">
+            Pelos dados enviados, ainda não é o momento de você ir para o evento presencial pois estou pensando no seu momento atual financeiro. Mas isso não te impede de começar.
+          </p>
+          <p className="font-body text-white/50 text-sm leading-relaxed max-w-sm mx-auto">
+            Recomendamos o <span className="text-white font-semibold">F.R.O = Fature Rápido Online</span>, ideal para quem está iniciando.
+          </p>
+        </div>
+        <a
+          href="https://carlosarantes.com.br/metodo-fro-v3/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 via-primary to-emerald-400 text-black font-body font-bold text-sm uppercase tracking-wider px-6 py-3 rounded hover:brightness-110 transition-all"
+        >
+          Veja como funciona esse método
+          <ArrowRight className="w-4 h-4" />
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-[#1A1A1A] border border-white/5 rounded-2xl p-6 sm:p-8 space-y-6">
+      {/* Progress */}
+      <div className="space-y-2.5">
+        <div className="flex justify-between items-center">
+          <span className="text-[11px] text-white/40 font-body font-medium">
+            {step < TOTAL_Q ? `Pergunta ${step + 1} de ${TOTAL_Q}` : "Finalizando cadastro"}
+          </span>
+          <span className="text-[11px] text-primary font-body font-bold">{progressPct}%</span>
+        </div>
+        <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-primary rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPct}%` }}
+            transition={{ duration: 0.4 }}
+          />
+        </div>
+        <div className="flex gap-1">
+          {multiStepQuestions.map((_, i) => (
+            <div
+              key={i}
+              className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                i < step ? "bg-primary" : i === step && step < TOTAL_Q ? "bg-primary/50" : "bg-white/10"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        {step < TOTAL_Q ? (
+          <motion.div
+            key={`q-${step}`}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="space-y-4"
+          >
+            <p className="font-body font-semibold text-white text-base leading-snug">
+              {multiStepQuestions[step].label}
+            </p>
+            <div className="space-y-2">
+              {multiStepQuestions[step].options.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => handleOptionSelect(option)}
+                  className="w-full text-left px-4 py-3.5 rounded-lg border border-white/10 bg-white/[0.02] hover:border-primary/40 hover:bg-primary/5 active:bg-primary/10 transition-all duration-150 font-body text-white/65 hover:text-white text-sm flex items-center justify-between gap-3 group"
+                >
+                  <span>{option}</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-white/20 group-hover:text-primary flex-shrink-0 transition-colors" />
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="contact"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="space-y-5"
+          >
+            <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/15">
+              <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+              <p className="font-body text-white/70 text-sm leading-relaxed">
+                <span className="text-white font-semibold">Ótimo perfil!</span> Agora informe seus dados para garantir sua vaga e receber mais informações.
+              </p>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="ms-nome" className="text-xs font-body font-medium text-white/80">Nome completo</Label>
+                <Input
+                  id="ms-nome"
+                  placeholder="Seu nome completo"
+                  value={contact.nome}
+                  onChange={(e) => handleContactChange("nome", e.target.value)}
+                  className={`h-11 bg-black/30 border-white/15 text-white/70 placeholder:text-white/25 ${contactErrors.nome ? "border-yellow-500" : ""}`}
+                />
+                {contactErrors.nome && <p className="text-[11px] text-yellow-400">{contactErrors.nome}</p>}
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="ms-email" className="text-xs font-body font-medium text-white/80">E-mail</Label>
+                  <Input
+                    id="ms-email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={contact.email}
+                    onChange={(e) => handleContactChange("email", e.target.value)}
+                    className={`h-11 bg-black/30 border-white/15 text-white/70 placeholder:text-white/25 ${contactErrors.email ? "border-yellow-500" : ""}`}
+                  />
+                  {contactErrors.email && <p className="text-[11px] text-yellow-400">{contactErrors.email}</p>}
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="ms-telefone" className="text-xs font-body font-medium text-white/80">WhatsApp</Label>
+                  <Input
+                    id="ms-telefone"
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="(11) 99999-9999"
+                    value={contact.telefone}
+                    onChange={(e) => handleContactChange("telefone", e.target.value)}
+                    className={`h-11 bg-black/30 border-white/15 text-white/70 placeholder:text-white/25 ${contactErrors.telefone ? "border-yellow-500" : ""}`}
+                  />
+                  {contactErrors.telefone && <p className="text-[11px] text-yellow-400">{contactErrors.telefone}</p>}
+                </div>
+              </div>
+              {submitError && <p className="text-sm text-yellow-400 text-center font-body">{submitError}</p>}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-r from-emerald-600 via-primary to-emerald-400 text-black font-body font-bold text-sm uppercase tracking-wider py-4 rounded hover:brightness-110 transition-all flex items-center justify-center gap-2 glow-green"
+              >
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                {isSubmitting ? "Enviando..." : "Garantir Minha Vaga"}
+              </button>
+              <div className="flex items-center justify-center">
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-white/30 font-body">
+                  <Shield className="w-3 h-3" /> Seus dados estão protegidos
+                </span>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════
+   MAIN COMPONENT
+   ═══════════════════════════════════════════ */
+
+const Index = () => {
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const countdown = useCountdown();
+
   const scrollToForm = () => document.getElementById("formulario")?.scrollIntoView({ behavior: "smooth" });
-  const filledCount = Object.keys(formData).filter((k) => formData[k as keyof FormData]).length;
-  const progress = Math.round((filledCount / 8) * 100);
 
   return (
     <>
@@ -998,72 +1209,14 @@ const Index = () => {
                 <motion.div variants={fadeUp} className="text-center mb-10">
                   <SectionLabel text="Inscreva-se" />
                   <SectionHeading>
-                    Garanta sua vaga e receba <span className="text-primary">informações exclusivas</span>
+                    Responda <span className="text-primary">7 perguntas rápidas</span> e garanta sua vaga
                   </SectionHeading>
-                  <p className="font-body font-medium text-white/50 text-base mt-3 max-w-md mx-auto">Preencha o formulário abaixo. Leva menos de 2 minutos.</p>
+                  <p className="font-body font-medium text-white/50 text-base mt-3 max-w-md mx-auto">Leva menos de 2 minutos. Sem compromisso.</p>
                 </motion.div>
 
-                <motion.form variants={fadeUp} onSubmit={handleSubmit} className="bg-[#1A1A1A] border border-white/5 rounded-2xl p-6 sm:p-8 space-y-5">
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-[11px] text-white font-body font-medium">Progresso</span>
-                      <span className="text-[11px] text-primary font-body font-bold">{progress}%</span>
-                    </div>
-                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                      <motion.div className="h-full bg-primary rounded-full" initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 0.4 }} />
-                    </div>
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5 sm:col-span-2">
-                      <Label htmlFor="nome" className="text-xs font-body font-medium text-white">Nome completo</Label>
-                      <Input id="nome" placeholder="Seu nome completo" value={formData.nome || ""} onChange={(e) => handleChange("nome", e.target.value)} className={`h-11 bg-black/30 border-white/15 text-white/70 placeholder:text-white/25 ${errors.nome ? "border-yellow-500" : ""}`} />
-                      {errors.nome && <p className="text-[11px] text-yellow-400">{errors.nome}</p>}
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="email" className="text-xs font-body font-medium text-white">E-mail</Label>
-                      <Input id="email" type="email" placeholder="seu@email.com" value={formData.email || ""} onChange={(e) => handleChange("email", e.target.value)} className={`h-11 bg-black/30 border-white/15 text-white/70 placeholder:text-white/25 ${errors.email ? "border-yellow-500" : ""}`} />
-                      {errors.email && <p className="text-[11px] text-yellow-400">{errors.email}</p>}
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="telefone" className="text-xs font-body font-medium text-white">WhatsApp</Label>
-                      <Input id="telefone" type="text" inputMode="numeric" placeholder="(11) 99999-9999" value={formData.telefone || ""} onChange={(e) => handleChange("telefone", e.target.value)} className={`h-11 bg-black/30 border-white/15 text-white/70 placeholder:text-white/25 ${errors.telefone ? "border-yellow-500" : ""}`} />
-                      {errors.telefone && <p className="text-[11px] text-yellow-400">{errors.telefone}</p>}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 pt-1">
-                    <div className="flex-1 h-px bg-white/10" />
-                    <span className="text-[10px] text-primary font-body font-bold uppercase tracking-[0.2em] whitespace-nowrap">Sobre seu negócio</span>
-                    <div className="flex-1 h-px bg-white/10" />
-                  </div>
-
-                  {questions.map((q) => (
-                    <div key={q.name} className="space-y-1.5">
-                      <Label className="text-xs font-body font-medium text-white">{q.label}</Label>
-                      <Select value={formData[q.name] || ""} onValueChange={(val) => handleChange(q.name, val)}>
-                        <SelectTrigger className={`h-11 bg-black/30 border-white/15 text-white/70 ${errors[q.name] ? "border-yellow-500" : ""}`}>
-                          <SelectValue placeholder="Selecione uma opção" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {q.options.map((opt) => (<SelectItem key={opt} value={opt}>{opt}</SelectItem>))}
-                        </SelectContent>
-                      </Select>
-                      {errors[q.name] && <p className="text-[11px] text-yellow-400">{errors[q.name]}</p>}
-                    </div>
-                  ))}
-
-                  {errors.form && <p className="text-sm text-yellow-400 text-center font-body">{errors.form}</p>}
-
-                  <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-emerald-600 via-primary to-emerald-400 text-black font-body font-bold text-sm uppercase tracking-wider py-4 rounded hover:brightness-110 transition-all flex items-center justify-center gap-2 glow-green">
-                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                    {isSubmitting ? "Enviando..." : "Garantir Minha Vaga"}
-                  </button>
-
-                  <div className="flex items-center justify-center pt-2">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] text-white/30 font-body"><Shield className="w-3 h-3" /> Seus dados estão protegidos</span>
-                  </div>
-                </motion.form>
+                <motion.div variants={fadeUp}>
+                  <MultiStepForm />
+                </motion.div>
               </motion.div>
             </div>
           </section>
