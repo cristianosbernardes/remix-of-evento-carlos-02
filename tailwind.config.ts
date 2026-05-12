@@ -51,11 +51,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        gold: {
-          DEFAULT: "#C9973A",
-          light: "#E0B45A",
-          dark: "#A67828",
-        },
         emerald: {
           glow: "hsl(var(--emerald-glow))",
         },

@@ -49,10 +49,10 @@ const speakers = [
 ];
 
 const learnings = [
-  { number: "01", title: "Como vender todos os dias nos maiores marketplaces do Brasil", subtitle: "E-Commerce & Marketplaces", desc: "Estratégias práticas para dominar Shopee, Mercado Livre e Amazon — e criar seu e-commerce próprio com alta conversão.", icon: ShoppingCart, bullets: ["Marketplaces que mais vendem", "Precificação estratégica", "Escala de operações"], gold: false },
-  { number: "02", title: "Como gerar novos clientes todos os dias sem desperdiçar dinheiro em anúncios", subtitle: "Tráfego Pago & Funis", desc: "Aprenda a criar campanhas que geram vendas reais e funis que transformam visitantes em compradores.", icon: Target, bullets: ["Meta Ads & Google Ads", "Funis de alta conversão", "Retorno sobre investimento"], gold: false },
-  { number: "03", title: "Como escalar seu faturamento sem precisar contratar mais funcionários", subtitle: "Escalabilidade & Gestão", desc: "Os sistemas e processos que permitem crescer sem aumentar a estrutura — da mesma forma que quem chegou ao primeiro milhão.", icon: TrendingUp, bullets: ["Automação de processos", "Gestão enxuta", "Operação digital"], gold: true },
-  { number: "04", title: "Como importar da China e criar sua marca própria com margem acima de 300%", subtitle: "Importação & Marca Própria", desc: "O caminho completo para importar com segurança, criar sua marca e multiplicar suas margens.", icon: Zap, bullets: ["Fornecedores confiáveis", "Processo de importação", "Construção de marca"], gold: true },
+  { number: "01", title: "Como vender todos os dias nos maiores marketplaces do Brasil", subtitle: "E-Commerce & Marketplaces", desc: "Estratégias práticas para dominar Shopee, Mercado Livre e Amazon — e criar seu e-commerce próprio com alta conversão.", icon: ShoppingCart, bullets: ["Marketplaces que mais vendem", "Precificação estratégica", "Escala de operações"] },
+  { number: "02", title: "Como gerar novos clientes todos os dias sem desperdiçar dinheiro em anúncios", subtitle: "Tráfego Pago & Funis", desc: "Aprenda a criar campanhas que geram vendas reais e funis que transformam visitantes em compradores.", icon: Target, bullets: ["Meta Ads & Google Ads", "Funis de alta conversão", "Retorno sobre investimento"] },
+  { number: "03", title: "Como escalar seu faturamento sem precisar contratar mais funcionários", subtitle: "Escalabilidade & Gestão", desc: "Os sistemas e processos que permitem crescer sem aumentar a estrutura — da mesma forma que quem chegou ao primeiro milhão.", icon: TrendingUp, bullets: ["Automação de processos", "Gestão enxuta", "Operação digital"] },
+  { number: "04", title: "Como importar da China e criar sua marca própria com margem acima de 300%", subtitle: "Importação & Marca Própria", desc: "O caminho completo para importar com segurança, criar sua marca e multiplicar suas margens.", icon: Zap, bullets: ["Fornecedores confiáveis", "Processo de importação", "Construção de marca"] },
 ];
 
 const outcomes = [
@@ -317,13 +317,13 @@ const SpeakerCard = ({ speaker: s }: { speaker: typeof speakers[0] }) => (
         {/* Credentials */}
         <div className="grid grid-cols-2 gap-3">
           {[
-            { label: "+10 anos", desc: "no mercado digital", gold: false },
-            { label: "China", desc: "validou fornecedores pessoalmente", gold: false },
-            { label: "R$1M+", desc: "gerados por alunos no 1º ano", gold: true },
-            { label: "Presencial", desc: "aprenda com quem faz", gold: false },
+            { label: "+10 anos", desc: "no mercado digital" },
+            { label: "China", desc: "validou fornecedores pessoalmente" },
+            { label: "R$1M+", desc: "gerados por alunos no 1º ano" },
+            { label: "Presencial", desc: "aprenda com quem faz" },
           ].map((c) => (
-            <div key={c.label} className={`bg-white/4 border rounded-xl px-4 py-3 ${c.gold ? "border-gold/20" : "border-white/6"}`}>
-              <p className={`font-display text-lg leading-none ${c.gold ? "text-gold" : "text-primary"}`}>{c.label}</p>
+            <div key={c.label} className="bg-white/4 border border-white/6 rounded-xl px-4 py-3">
+              <p className="font-display text-primary text-lg leading-none">{c.label}</p>
               <p className="font-body text-white/40 text-xs mt-1 leading-snug">{c.desc}</p>
             </div>
           ))}
@@ -454,7 +454,31 @@ const Index = () => {
   const progress = Math.round((filledCount / 8) * 100);
 
   return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-background text-white overflow-x-hidden">
+    <>
+      {/* ══ PREMIUM BACKGROUND — fixed orbs + light beams ══ */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden bg-background" style={{ zIndex: -1 }}>
+        {/* Orb 1 — large, top-right, primary glow */}
+        <div className="absolute rounded-full" style={{ top: "-20%", right: "-12%", width: "70vw", height: "70vw", maxWidth: 900, maxHeight: 900, background: "radial-gradient(circle at center, rgba(0,230,118,0.13) 0%, transparent 60%)" }} />
+        {/* Orb 2 — mid-left */}
+        <div className="absolute rounded-full" style={{ top: "38%", left: "-18%", width: "55vw", height: "55vw", maxWidth: 700, maxHeight: 700, background: "radial-gradient(circle at center, rgba(0,230,118,0.09) 0%, transparent 60%)" }} />
+        {/* Orb 3 — bottom-right */}
+        <div className="absolute rounded-full" style={{ bottom: "8%", right: "-5%", width: "42vw", height: "42vw", maxWidth: 520, maxHeight: 520, background: "radial-gradient(circle at center, rgba(0,230,118,0.07) 0%, transparent 60%)" }} />
+        {/* Orb 4 — center subtle teal for depth */}
+        <div className="absolute rounded-full" style={{ top: "55%", left: "30%", width: "35vw", height: "35vw", maxWidth: 440, maxHeight: 440, background: "radial-gradient(circle at center, rgba(0,200,255,0.04) 0%, transparent 60%)" }} />
+
+        {/* Light beam 1 — diagonal left */}
+        <div className="absolute" style={{ top: "-8%", left: "20%", width: 80, height: "72vh", background: "linear-gradient(to bottom, rgba(0,230,118,0.11) 0%, transparent 100%)", transform: "rotate(22deg)", transformOrigin: "top center", filter: "blur(24px)" }} />
+        {/* Light beam 2 — right side, white */}
+        <div className="absolute" style={{ top: "-5%", right: "26%", width: 50, height: "55vh", background: "linear-gradient(to bottom, rgba(255,255,255,0.06) 0%, transparent 100%)", transform: "rotate(-14deg)", transformOrigin: "top center", filter: "blur(14px)" }} />
+        {/* Light beam 3 — thin crisp, green */}
+        <div className="absolute" style={{ top: 0, left: "57%", width: 2, height: "48vh", background: "linear-gradient(to bottom, rgba(0,230,118,0.30) 0%, transparent 100%)", transform: "rotate(8deg)", transformOrigin: "top center" }} />
+        {/* Light beam 4 — thin crisp, white */}
+        <div className="absolute" style={{ top: 0, right: "40%", width: 1.5, height: "38vh", background: "linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, transparent 100%)", transform: "rotate(-5deg)", transformOrigin: "top center" }} />
+        {/* Light beam 5 — wide soft, center-right, lower section */}
+        <div className="absolute" style={{ top: "45%", right: "10%", width: 60, height: "50vh", background: "linear-gradient(to bottom, rgba(0,230,118,0.07) 0%, transparent 100%)", transform: "rotate(-18deg)", transformOrigin: "top center", filter: "blur(20px)" }} />
+      </div>
+
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen text-white overflow-x-hidden">
 
           {/* ══ NAV — V4 style: logo | urgency | countdown | CTA ══ */}
           <nav className="fixed top-0 left-0 right-0 z-[5000] bg-[rgba(3,12,24,0.92)] backdrop-blur-[12px]">
@@ -509,6 +533,18 @@ const Index = () => {
             <div className="absolute inset-0 bg-background/60" />
             <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
 
+            {/* Hero-specific premium glows — above overlays */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 2 }}>
+              {/* Top-right orb */}
+              <div className="absolute rounded-full" style={{ top: "-30%", right: "-10%", width: "60%", height: "120%", background: "radial-gradient(circle at 70% 30%, rgba(0,230,118,0.12) 0%, transparent 55%)" }} />
+              {/* Bottom-left orb */}
+              <div className="absolute rounded-full" style={{ bottom: "-20%", left: "-10%", width: "50%", height: "80%", background: "radial-gradient(circle at 30% 70%, rgba(0,230,118,0.07) 0%, transparent 55%)" }} />
+              {/* Thin crisp beam — left of center */}
+              <div className="absolute" style={{ top: 0, left: "32%", width: 1.5, height: "80%", background: "linear-gradient(to bottom, rgba(0,230,118,0.35) 0%, transparent 100%)", transform: "rotate(12deg)", transformOrigin: "top center" }} />
+              {/* Wide soft beam — right */}
+              <div className="absolute" style={{ top: "-5%", right: "20%", width: 55, height: "70%", background: "linear-gradient(to bottom, rgba(0,230,118,0.07) 0%, transparent 100%)", transform: "rotate(-10deg)", transformOrigin: "top center", filter: "blur(18px)" }} />
+            </div>
+
             {/* Content */}
             <div className="relative z-10 text-center px-6 max-w-4xl mx-auto flex flex-col items-center">
               <motion.div initial="hidden" animate="visible" variants={stagger} className="flex flex-col items-center">
@@ -524,7 +560,7 @@ const Index = () => {
                 <motion.h1 variants={fadeUp} className="font-display text-[clamp(1.75rem,5.5vw,2.5rem)] mt-8 leading-[1.3] uppercase">
                   O comércio mudou.{" "}
                   <span className="text-primary">Enquanto a maioria ainda não percebeu</span>{" "}
-                  — outros estão <span className="text-gold">faturando todos os dias</span> pela internet.
+                  — outros estão faturando todos os dias pela internet.
                 </motion.h1>
 
                 {/* Subtitle */}
@@ -731,18 +767,18 @@ const Index = () => {
 
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-40px" }} variants={stagger} className="space-y-4">
                 {learnings.map((item, i) => (
-                  <motion.div key={i} variants={fadeUp} className={`rounded-2xl bg-[#1A1A1A] overflow-hidden transition-colors ${(item as any).gold ? "border border-gold/15 hover:border-gold/30" : "border border-white/5 hover:border-primary/20"}`}>
-                    <div className={`h-[3px] bg-gradient-to-r ${(item as any).gold ? "from-gold via-gold/50 to-transparent" : "from-primary via-primary/50 to-transparent"}`} />
+                  <motion.div key={i} variants={fadeUp} className="rounded-2xl bg-[#1A1A1A] border border-white/5 overflow-hidden hover:border-primary/20 transition-colors">
+                    <div className="h-[3px] bg-gradient-to-r from-primary via-primary/50 to-transparent" />
                     <div className="flex flex-col sm:flex-row gap-5 p-5 sm:p-6">
                       <div className="flex sm:flex-col items-center sm:items-start gap-3 flex-shrink-0">
-                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${(item as any).gold ? "bg-gold/10 border border-gold/20" : "bg-primary/10 border border-primary/20"}`}>
-                          <item.icon className={`w-5 h-5 ${(item as any).gold ? "text-gold" : "text-primary"}`} />
+                        <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                          <item.icon className="w-5 h-5 text-primary" />
                         </div>
-                        <span className={`font-display text-3xl ${(item as any).gold ? "text-gold/15" : "text-primary/15"}`}>{item.number}</span>
+                        <span className="font-display text-3xl text-primary/15">{item.number}</span>
                       </div>
                       <div className="flex-1">
                         <h3 className="font-display text-base sm:text-lg text-white leading-tight">{item.title}</h3>
-                        <p className={`font-body font-semibold text-xs mt-1 uppercase tracking-wider ${(item as any).gold ? "text-gold" : "text-primary"}`}>{item.subtitle}</p>
+                        <p className="text-primary font-body font-semibold text-xs mt-1 uppercase tracking-wider">{item.subtitle}</p>
                         <p className="text-white/40 font-body text-sm mt-3 leading-relaxed">{item.desc}</p>
                         <div className="flex flex-wrap gap-2 mt-4">
                           {item.bullets.map((b, j) => (
@@ -810,7 +846,7 @@ const Index = () => {
                 <motion.div variants={fadeUp} className="text-center mb-10">
                   <SectionLabel text="Caso real" />
                   <SectionHeading>
-                    VOCÊ PODE SER O <span className="text-gold">PRÓXIMO.</span>
+                    VOCÊ PODE SER O <span className="text-primary">PRÓXIMO.</span>
                   </SectionHeading>
                 </motion.div>
 
@@ -829,12 +865,12 @@ const Index = () => {
                     </div>
                     <p className="font-display text-[clamp(1.1rem,3vw,1.5rem)] text-white leading-tight">
                       Do zero ao{" "}
-                      <span className="text-gold">R$1.000.000 faturados</span>{" "}
+                      <span className="text-primary">R$1.000.000 faturados</span>{" "}
                       no primeiro ano.
                     </p>
                     <p className="font-body text-white/50 text-sm leading-relaxed max-w-xl">
                       Começou do absoluto zero no e-commerce. Aplicou as estratégias, foi pessoalmente à China com Carlos Arantes validar fornecedores, e no primeiro ano de operação já atingiu{" "}
-                      <span className="text-gold font-semibold">R$1 milhão faturados — sem ter nenhum funcionário.</span>
+                      <span className="text-white font-semibold">R$1 milhão faturados — sem ter nenhum funcionário.</span>
                     </p>
                     <div className="flex flex-wrap gap-3">
                       {[
@@ -1065,6 +1101,7 @@ const Index = () => {
             </div>
           </footer>
         </motion.div>
+    </>
   );
 };
 
