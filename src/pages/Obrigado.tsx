@@ -65,7 +65,7 @@ const Obrigado = () => (
 
       {/* WhatsApp CTA */}
       <a
-        href="https://wa.me/5511989585340?text=Acabei%20de%20preencher%20o%20formul%C3%A1rio%20do%20evento%2C%20quero%20mais%20informa%C3%A7%C3%B5es"
+        href="https://wa.me/5511994087347?text=Acabei%20de%20preencher%20o%20formul%C3%A1rio%20do%20evento%2C%20quero%20mais%20informa%C3%A7%C3%B5es"
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 via-primary to-emerald-400 text-black font-body font-bold text-sm uppercase tracking-[0.1em] px-8 py-4 rounded hover:brightness-110 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 glow-green"
